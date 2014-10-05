@@ -34,14 +34,42 @@ void loop()
   
   int reach = 50;
   int rotation = 30;
-  
-  double pi = 3.141592653589793;
-  for(double i = 0; i < 100000; i++) {
-    //println(i); 
-    uarm.setPosition(reach/2 + reach/2*cos(i/500), 0, rotation*sin(i/500), 0);
-    //delay(200);
-    Serial.println(i);   
-  }  
+  int d = 50;
+
+  int leftServoLast	= 110;
+  int rightServoLast	= 100;
+  int rotServoLast	= 90;
+  int leftServo;
+  int rightServo;
+  int rotServo;
+
+
+
+
+
+
+//  leftServo = 90;
+//  rightServo = 70;
+//  rotServo = 60;
+//  
+//  uarm.servoBufOutL(leftServoLast,  leftServo);
+//  uarm.servoBufOutR(rightServoLast, rightServo);
+//  uarm.servoBufOutRot(rotServoLast, rotServo);
+//
+//  leftServoLast = leftServo;
+//  rightServoLast = rightServo;
+//  rotServoLast = rotServo;
+
+
+
+
+//  double pi = 3.141592653589793;
+//  for(double i = 0; i < 100000; i++) {
+//    //println(i); 
+//    uarm.setPosition(reach/2 + reach/2*cos(i/500), 0, rotation*sin(i/500), 0);
+//    //delay(200);
+//    Serial.println("This position is " + String(i));   
+//  }  
 } 
 
 void motion()
