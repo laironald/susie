@@ -7,13 +7,9 @@ ser.write("hello")
 
 # ----------------
 
-s = ser.read(10)
-print s
 line = ser.readline()
 print line
 
-s = ser.read(10)
-print s
 line = ser.readline()
 print line
 

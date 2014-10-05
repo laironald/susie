@@ -12,7 +12,7 @@
 #include <UF_uArm.h>
 
 UF_uArm uarm;           // initialize the uArm library 
-int incomingByte = 0;
+String readString;
 
 /* SET GLOBAL VARIABLES */
 int reach = 50;
@@ -46,20 +46,29 @@ void loop()
   motion();
   motionReturn();
   */
-
-  if (Serial.available() > 0) {
-    // read the incoming byte:
-    incomingByte = Serial.read();
   
-    // say what you got:
-    Serial.print("I received: ");
-    Serial.println(incomingByte, DEC);
+  // Convert serial.read() into a useable string using Arduino?
+  // http://stackoverflow.com/questions/5697047/convert-serial-read-into-a-useable-string-using-arduino
+  // http://stackoverflow.com/questions/24961402/how-to-compare-string-from-serial-read
+
+  while (Serial.available()) {
+    delay(3);  
+    char c = Serial.read();
+    readString += c; 
   }
-  
-  Serial.println("hello");
-
-
-
+  if (readString.length() >0) {
+    if (readString == "on") {
+      Serial.println("switching on");
+    } else if (readString == "off") {
+      Serial.println("switching on");
+    } else if (readString == "hello") { 
+      Serial.println("DAVE!");
+      Serial.println(readString);
+    } else {
+      Serial.println(readString);
+    }
+    readString="";
+  }   
 
 //  leftServo = 90;
 //  rightServo = 70;
