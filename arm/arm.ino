@@ -22,6 +22,7 @@ void setup()
   uarm.setServoSpeed(SERVO_L, speed);  // 0=full speed, 1-255 slower to faster
   uarm.setServoSpeed(SERVO_ROT, speed); // 0=full speed, 1-255 slower to faster
   delay(500);
+  unsigned char data[3][1000];
   
 }
 
