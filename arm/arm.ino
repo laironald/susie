@@ -15,12 +15,14 @@ UF_uArm uarm;           // initialize the uArm library
 
 void setup() 
 {
+  Serial.begin(9600);
   int speed = 50;
   uarm.init();          // initialize the uArm position
   uarm.setServoSpeed(SERVO_R, speed);  // 0=full speed, 1-255 slower to faster
   uarm.setServoSpeed(SERVO_L, speed);  // 0=full speed, 1-255 slower to faster
   uarm.setServoSpeed(SERVO_ROT, speed); // 0=full speed, 1-255 slower to faster
   delay(500);
+  
 }
 
 void loop()
@@ -38,7 +40,7 @@ void loop()
     //println(i); 
     uarm.setPosition(reach/2 + reach/2*cos(i/500), 0, rotation*sin(i/500), 0);
     //delay(200);
-    
+    Serial.println(i);   
   }  
 } 
 
