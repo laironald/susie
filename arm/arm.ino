@@ -12,6 +12,20 @@
 #include <UF_uArm.h>
 
 UF_uArm uarm;           // initialize the uArm library 
+int incomingByte = 0;
+
+/* SET GLOBAL VARIABLES */
+int reach = 50;
+int rotation = 30;
+int d = 50;
+
+int leftServoLast	= 110;
+int rightServoLast	= 100;
+int rotServoLast	= 90;
+int leftServo;
+int rightServo;
+int rotServo;
+
 
 void setup() 
 {
@@ -32,19 +46,17 @@ void loop()
   motion();
   motionReturn();
   */
+
+  if (Serial.available() > 0) {
+    // read the incoming byte:
+    incomingByte = Serial.read();
   
-  int reach = 50;
-  int rotation = 30;
-  int d = 50;
-
-  int leftServoLast	= 110;
-  int rightServoLast	= 100;
-  int rotServoLast	= 90;
-  int leftServo;
-  int rightServo;
-  int rotServo;
-
-
+    // say what you got:
+    Serial.print("I received: ");
+    Serial.println(incomingByte, DEC);
+  }
+  
+  Serial.println("hello");
 
 
 
