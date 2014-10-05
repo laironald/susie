@@ -47,9 +47,11 @@ void loop()
   motionReturn();
   */
   
-  // Convert serial.read() into a useable string using Arduino?
-  // http://stackoverflow.com/questions/5697047/convert-serial-read-into-a-useable-string-using-arduino
-  // http://stackoverflow.com/questions/24961402/how-to-compare-string-from-serial-read
+  /*
+    Convert serial.read() into a useable string using Arduino?
+    http://stackoverflow.com/questions/5697047/convert-serial-read-into-a-useable-string-using-arduino
+    http://stackoverflow.com/questions/24961402/how-to-compare-string-from-serial-read
+  */
 
   while (Serial.available()) {
     delay(3);  
@@ -60,38 +62,14 @@ void loop()
     if (readString == "on") {
       Serial.println("switching on");
     } else if (readString == "off") {
-      Serial.println("switching on");
-    } else if (readString == "hello") { 
-      Serial.println("DAVE!");
-      Serial.println(readString);
+      Serial.println("switching off");
     } else {
+      Serial.print("This is a string: ");
       Serial.println(readString);
     }
     readString="";
   }   
 
-//  leftServo = 90;
-//  rightServo = 70;
-//  rotServo = 60;
-//  
-//  uarm.servoBufOutL(leftServoLast,  leftServo);
-//  uarm.servoBufOutR(rightServoLast, rightServo);
-//  uarm.servoBufOutRot(rotServoLast, rotServo);
-//
-//  leftServoLast = leftServo;
-//  rightServoLast = rightServo;
-//  rotServoLast = rotServo;
-
-
-
-
-//  double pi = 3.141592653589793;
-//  for(double i = 0; i < 100000; i++) {
-//    //println(i); 
-//    uarm.setPosition(reach/2 + reach/2*cos(i/500), 0, rotation*sin(i/500), 0);
-//    //delay(200);
-//    Serial.println("This position is " + String(i));   
-//  }  
 } 
 
 void motion()
