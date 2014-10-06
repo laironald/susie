@@ -10,6 +10,7 @@
 *************************************************************************/
 #include <EEPROM.h>
 #include <UF_uArm.h>
+#include <avr/pgmspace.h>
 
 UF_uArm uarm;           // initialize the uArm library 
 String readString;
@@ -26,6 +27,197 @@ int leftServo;
 int rightServo;
 int rotServo;
 
+prog_int16_t data[94][3] PROGMEM = {
+  
+  {86, 103, 90}, 
+  
+  {86, 103, 90}, 
+  
+  {86, 103, 90}, 
+  
+  {86, 103, 90}, 
+  
+  {86, 103, 90}, 
+  
+  {86, 103, 90}, 
+  
+  {86, 103, 90}, 
+  
+  {86, 103, 90}, 
+  
+  {86, 103, 91}, 
+  
+  {86, 103, 90}, 
+  
+  {86, 103, 89}, 
+  
+  {86, 103, 91}, 
+  
+  {86, 103, 91}, 
+  
+  {86, 102, 91}, 
+  
+  {86, 102, 90}, 
+  
+  {85, 101, 90}, 
+  
+  {83, 98, 90}, 
+  
+  {81, 94, 90}, 
+  
+  {80, 90, 90}, 
+  
+  {80, 87, 90}, 
+  
+  {81, 83, 90}, 
+  
+  {82, 79, 90}, 
+  
+  {85, 75, 90}, 
+  
+  {87, 71, 90}, 
+  
+  {88, 65, 90}, 
+  
+  {89, 60, 89}, 
+  
+  {91, 56, 89}, 
+  
+  {92, 53, 89}, 
+  
+  {92, 51, 89}, 
+  
+  {92, 50, 89}, 
+  
+  {92, 51, 89}, 
+  
+  {92, 51, 89}, 
+  
+  {92, 51, 89}, 
+  
+  {92, 51, 87}, 
+  
+  {92, 51, 83}, 
+  
+  {92, 51, 77}, 
+  
+  {92, 51, 72}, 
+  
+  {92, 51, 67}, 
+  
+  {92, 52, 63}, 
+  
+  {92, 53, 58}, 
+  
+  {92, 56, 56}, 
+  
+  {92, 60, 54}, 
+  
+  {92, 65, 53}, 
+  
+  {92, 71, 54}, 
+  
+  {92, 76, 57}, 
+  
+  {92, 81, 60}, 
+  
+  {91, 84, 64}, 
+  
+  {90, 87, 67}, 
+  
+  {87, 87, 68}, 
+  
+  {82, 85, 68}, 
+  
+  {76, 84, 67}, 
+  
+  {70, 82, 67}, 
+  
+  {65, 79, 67}, 
+  
+  {61, 76, 67}, 
+  
+  {58, 74, 68}, 
+  
+  {55, 71, 70}, 
+  
+  {55, 67, 72}, 
+  
+  {55, 63, 73}, 
+  
+  {55, 59, 74}, 
+  
+  {56, 56, 74}, 
+  
+  {57, 52, 75}, 
+  
+  {60, 49, 75}, 
+  
+  {61, 45, 75}, 
+  
+  {64, 42, 75}, 
+  
+  {66, 39, 75}, 
+  
+  {70, 38, 76}, 
+  
+  {74, 38, 79}, 
+  
+  {78, 38, 83}, 
+  
+  {83, 38, 87}, 
+  
+  {88, 39, 91}, 
+  
+  {91, 40, 94}, 
+  
+  {95, 40, 96}, 
+  
+  {97, 41, 99}, 
+  
+  {99, 44, 101}, 
+  
+  {99, 48, 100}, 
+  
+  {99, 52, 100}, 
+  
+  {99, 56, 100}, 
+  
+  {99, 60, 100}, 
+  
+  {99, 64, 100}, 
+  
+  {99, 67, 99}, 
+  
+  {99, 68, 99}, 
+  
+  {99, 71, 99}, 
+  
+  {99, 72, 98}, 
+  
+  {99, 72, 98}, 
+  
+  {99, 73, 98}, 
+  
+  {99, 73, 98}, 
+  
+  {99, 73, 98}, 
+  
+  {99, 73, 98}, 
+  
+  {100, 73, 98}, 
+  
+  {100, 73, 98}, 
+  
+  {100, 73, 98}, 
+  
+  {100, 73, 98}, 
+  
+  {100, 73, 98}, 
+  
+  {100, 73, 97}, 
+  
+  };
 
 void setup() 
 {
@@ -36,8 +228,7 @@ void setup()
   uarm.setServoSpeed(SERVO_L, speed);  // 0=full speed, 1-255 slower to faster
   uarm.setServoSpeed(SERVO_ROT, speed); // 0=full speed, 1-255 slower to faster
   delay(500);
-  unsigned char data[3][1000];
-  
+  // unsigned char data[3][1000];
 }
 
 void loop()
@@ -61,6 +252,7 @@ void loop()
   if (readString.length() >0) {
     if (readString == "on") {
       Serial.println("switching on");
+      playBack();
     } else if (readString == "off") {
       Serial.println("switching off");
     } else {
@@ -132,4 +324,42 @@ void motionReturn()
   delay(400);
   uarm.gripperDirectDetach();         // direct detach 
   delay(500);
+}
+
+void playBack() 
+{
+////    Serial.println(data[0][0]);
+////    Serial.println(data[0][1]);
+////    Serial.println(data[0][2]);
+////    Serial.println(data[1][0]);
+////    Serial.println(data[1][1]);
+////    Serial.println(data[1][2]);
+////    
+//    for(int i = 0; i < 100; i++) {
+//      uarm.servoBufOutL(leftServoLast,  i);
+//      leftServoLast = i;
+//    }
+//    for(int i = 0; i < 100; i++) {
+//      uarm.servoBufOutR(rightServoLast,  i);
+//      rightServoLast = i;
+//    }
+//    for(int i = 0; i < 90; i++) {
+
+//    }
+
+
+  for(int i = 0; i < 90; i++) {
+      Serial.println(data[i][0]);
+      Serial.println(data[i][1]);
+      Serial.println(data[i][2]);
+    uarm.servoBufOutL(leftServoLast,  data[i][0]);
+    uarm.servoBufOutR(rightServoLast, data[i][1]);
+    uarm.servoBufOutRot(rotServoLast, data[i][2]);
+    
+    leftServoLast  = data[i][0];
+    rightServoLast = data[i][1];
+    rotServoLast   = data[i][2];
+    delay(d);
+  }
+
 }

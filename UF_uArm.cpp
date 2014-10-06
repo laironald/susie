@@ -457,7 +457,12 @@ void UF_uArm::play(unsigned char buttonPin)
     addr++;
   }
 
+  Serial.println("int data[" + String(addr) + "][3] = {");
+
   addr = 0;
+
+
+
   while(digitalRead(buttonPin))
   {
     if(data[2][addr] == DATA_FLAG)
@@ -469,16 +474,26 @@ void UF_uArm::play(unsigned char buttonPin)
     unsigned char leftServo  = data[0][addr];
     unsigned char rightServo = data[1][addr];
     unsigned char rotServo   = data[2][addr];
+
+    Serial.print("{");
+    Serial.print(leftServo);
+    Serial.print(", ");
+    Serial.print(rightServo);
+    Serial.print(", ");
+    Serial.print(rotServo);
+    Serial.println("}, ");
     
-		Serial.println("uarm.servoBufOutL(leftServoLast, " + String(leftServo) + ");");
-		Serial.println("uarm.servoBufOutR(rightServoLast, " + String(rightServo) + ");");
-		Serial.println("uarm.servoBufOutRot(rotServoLast, " + String(rotServo) + ");");
-    Serial.println("leftServoLast  =  " + String(leftServo) + ";");
-    Serial.println("rightServoLast =  " + String(rightServo) + ";");
-    Serial.println("rotServoLast   =  " + String(rotServo) + ";");
-    Serial.println("delay(d);");
+		// Serial.println("uarm.servoBufOutL(leftServoLast, " + String(leftServo) + ");");
+		// Serial.println("uarm.servoBufOutR(rightServoLast, " + String(rightServo) + ");");
+		// Serial.println("uarm.servoBufOutRot(rotServoLast, " + String(rotServo) + ");");
+  //   Serial.println("leftServoLast  =  " + String(leftServo) + ";");
+  //   Serial.println("rightServoLast =  " + String(rightServo) + ";");
+  //   Serial.println("rotServoLast   =  " + String(rotServo) + ";");
+  //   Serial.println("delay(d);");
     addr++;
   }
+
+  Serial.println("};");
 
   Serial.println("Done");
   servoL.detach();
