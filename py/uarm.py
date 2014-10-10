@@ -1,16 +1,23 @@
 import serial
+import time
 
-ser = serial.Serial('/dev/cu.usbserial-A6031NA9', 9600, timeout=1)
+# Arduino Playground
+# http://playground.arduino.cc/Interfacing/Python
+
+serial_port = '/dev/cu.usbserial-A6031NA9'
+serial_port = '/dev/tty.usbmodem1411'
+
+ser = serial.Serial(serial_port, 9600, timeout=1)
+time.sleep(2)
 print ser.name
 
-ser.write("hello")
+ser.write("on")
+print ser.readline()
 
 # ----------------
 
-line = ser.readline()
-print line
+ser.write("off")
+print ser.readline()
 
-line = ser.readline()
-print line
 
-# ser.close()
+ser.close()
