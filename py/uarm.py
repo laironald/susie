@@ -3,7 +3,7 @@ import time
 
 # Arduino Playground
 # http://playground.arduino.cc/Interfacing/Python
-def connect(item):
+def connect(item = None):
 	if item:
 		serial_port = '/dev/cu.usbserial-A6031NA9'
 		serial_port = '/dev/tty.usbmodem1411'
@@ -18,5 +18,5 @@ def connect(item):
 
 		ser.close()
 		return output
-	else
+	else:
 		return 

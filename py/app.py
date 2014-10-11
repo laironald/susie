@@ -8,7 +8,7 @@ app.debug = True
 @app.route('/')
 def index():
     # return render_template('views/index.html', method=method, controller=controller)
-    return "".join(uarm.connect("on"))
+    return "".join(uarm.connect())
 
 @app.route('/<item>')
 def actions(item):
