@@ -2,6 +2,11 @@ from flask import Flask, render_template
 from flask import request, session
 import uarm
 
+# /             = index
+# /listen       = listen to the Serial Port (WIP)
+# /push/<item>  = submit command
+
+
 app = Flask(__name__, static_folder='static', static_url_path='')
 app.debug = True
 
