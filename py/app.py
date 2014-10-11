@@ -7,9 +7,14 @@ app.debug = True
 
 @app.route('/')
 def index():
-    method = "index"
     # return render_template('views/index.html', method=method, controller=controller)
-    return "".join(uarm.connect())
+    return "".join(uarm.connect("on"))
+
+@app.route('/<item>')
+def actions(item):
+    # return render_template('views/index.html', method=method, controller=controller)
+    # return "".join(uarm.connect(item))
+    return "".join(uarm.connect(str(item)))
 
 
 if __name__ == '__main__':
