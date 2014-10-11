@@ -5,10 +5,13 @@ import time
 # http://playground.arduino.cc/Interfacing/Python
 def connect(item = None):
 	if item:
-		serial_port = '/dev/cu.usbserial-A6031NA9'
-		serial_port = '/dev/tty.usbmodem1411'
+    try:
+  		serial_port = '/dev/cu.usbserial-A6031NA9'
+  		ser = serial.Serial(serial_port, 9600, timeout=1)
+    except:
+      serial_port = '/dev/tty.usbmodem1411'
+      ser = serial.Serial(serial_port, 9600, timeout=1)
 
-		ser = serial.Serial(serial_port, 9600, timeout=1)
 		time.sleep(2)
 
 		output = []
@@ -19,4 +22,4 @@ def connect(item = None):
 		ser.close()
 		return output
 	else:
-		return 
+		return [""]
