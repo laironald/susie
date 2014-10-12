@@ -68,10 +68,18 @@ void loop()
 
 
     } else {
+      rightServo = readString.toInt();
+      uarm.setPosition(leftServo, rightServo, rotServo, 0); 
+      Serial.println(leftServo);
+      Serial.println(rightServo);
+      Serial.println(rotServo);
+
+      /*
       Serial.print("This is a string: ");
       Serial.println(readString);
       Serial.print("Servo positions: ")
       Serial.print
+      */
     }
     readString="";
   }   
