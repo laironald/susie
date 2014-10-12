@@ -105,6 +105,8 @@ app.controller("MainController", ['$scope', '$rootScope', 'Model', function($sco
   };
   $scope.clickOn = function() {
     var action = ($scope.on) ? 'on' : 'off';
+    if (!$scope.arduino_connected)
+      Model.show('api/push', action);
     $rootScope.$broadcast("PUSH-ACTION", { action: action });
   };
   // ROOTSCOPE
@@ -118,6 +120,8 @@ app.controller("MainController", ['$scope', '$rootScope', 'Model', function($sco
 app.controller("CustomController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
   $scope.customFinish = function() {
     var action = $scope.custom_text;
+    if (!$scope.arduino_connected)
+      Model.show('api/push', action);    
     $rootScope.$broadcast("PUSH-ACTION", { action: action });
   };
 }]);
