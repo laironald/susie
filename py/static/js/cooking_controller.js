@@ -20,6 +20,7 @@ var app = angular.module('cooking', [
 /* CONTROLLERS */
 
 app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
+  // variable called arduino_connected
   $scope.main = "ready?";
   $scope.status = "get started";
   $scope.custom_main = "";
@@ -41,7 +42,7 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
           $scope.processing = true;
           $scope.main = action;
           $rootScope.$broadcast("ON-SWITCH", { action: action });
-          Model.show('push', action).success(function(res) {
+          Model.show('api/push', action).success(function(res) {
             $scope.status = res;
             $scope.processing = false;
           });
@@ -50,7 +51,7 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
         if ($scope.custom_main !== action) {
           $scope.processing = true;
           $scope.custom_main = action;
-          Model.show('push', action).success(function(res) {
+          Model.show('api/push', action).success(function(res) {
             $scope.custom_status = res;
             $scope.processing = false;
           });

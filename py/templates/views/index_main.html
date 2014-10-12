@@ -1,5 +1,12 @@
 {% raw %}
 
+  <div data-ng-hide="arduino_connected">
+    <div class="alert alert-warning" role="alert">
+      Warning: Arduino not currently connected. 
+      <a href="javascript:window.location.reload();"><i class="fa fa-refresh"></i> Refresh</a>
+    </div>
+  </div>
+
   <div class="panel">
     <div class="panel-heading">
       <h2 class="panel-title">{{ main }}</h2>

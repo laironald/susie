@@ -18,6 +18,7 @@
     {% block specific_stylesheets %}{% endblock %}
   </head>
   <body data-ng-controller="CookingController" data-ng-cloak>
+    <span data-ng-init="arduino_connected = {{ active }}"></span>
     <span class="pusher" data-key='{{ pusher_key }}' data-channel-name="app-channel"></span>
 
     <div class="sidebar sidebar-left" toggleable parent-active-class="sidebar-left-in" id="mainSidebar">
