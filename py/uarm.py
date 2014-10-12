@@ -12,6 +12,8 @@ class Arduino:
     if not self.ser:
       self.setSerial()
   def setSerial(self):
+    # if segment fault error, use this:
+    # http://stackoverflow.com/questions/19531969/segmentation-fault-11-in-os-x
     for sp in serial.tools.list_ports.comports():
       if sp[1] != 'n/a':
         try:
@@ -21,12 +23,6 @@ class Arduino:
         if ser:
           self.ser = ser
           break
-
-# if segment fault error, use this:
-# http://stackoverflow.com/questions/19531969/segmentation-fault-11-in-os-x
-
-def ports():
-  return 
 
 # Arduino Playground
 # http://playground.arduino.cc/Interfacing/Python
