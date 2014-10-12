@@ -13,9 +13,20 @@ Scss(app, static_dir='static', asset_dir='assets')
 
 app.debug = True
 
+#################
+## web app 
+
 @app.route('/')
 def index():
   return render_template('views/index.html', controller='index')
+
+@app.route('/index_main.html')
+def index_main():
+  return render_template('views/index_main.html', controller='index')
+
+
+#################
+## commands
 
 @app.route('/listen')
 def listen():
