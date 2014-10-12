@@ -6,10 +6,10 @@ var app = angular.module('cooking', [
 ]).config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/', {
     controller:'MainController',
-    templateUrl:'index_main.html'
+    templateUrl:'indexMain.html'
   }).when('/custom', {
     controller:'CustomController',
-    templateUrl:'index_custom.html'
+    templateUrl:'indexCustom.html'
   }).otherwise({
     redirectTo:'/'
   });
@@ -20,7 +20,7 @@ var app = angular.module('cooking', [
 /* CONTROLLERS */
 
 app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
-  // variable called arduino_connected
+  // variable called arduinoConnected
   $scope.Config = {
     devices: []
   };
@@ -41,7 +41,7 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
     var action = args.action;
     console.log(args);
     if (action == 'on' || action == 'off') {
-      if (args.status || !$scope.arduino_connected) {
+      if (args.status || !$scope.arduinoConnected) {
         $scope.Main = args.action;
         if (args.status) {
           $scope.Status = args.status;          
@@ -61,7 +61,7 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
       }
       $rootScope.$broadcast("ON-SWITCH", { action: action });
     } else {
-      if (args.status || !$scope.arduino_connected) {
+      if (args.status || !$scope.arduinoConnected) {
         $scope.CustomMain = args.action;
         if (args.status) {
           $scope.CustomStatus = args.status;
@@ -115,7 +115,7 @@ app.controller("MainController", ['$scope', '$rootScope', 'Model', function($sco
   };
   $scope.clickOn = function() {
     var action = ($scope.on) ? 'on' : 'off';
-    if (!$scope.arduino_connected)
+    if (!$scope.arduinoConnected)
       Model.show('api/push', action);
     $rootScope.$broadcast("PUSH-ACTION", { action: action });
   };
@@ -129,8 +129,8 @@ app.controller("MainController", ['$scope', '$rootScope', 'Model', function($sco
 
 app.controller("CustomController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
   $scope.customFinish = function() {
-    var action = $scope.custom_text;
-    if (!$scope.arduino_connected)
+    var action = $scope.customText;
+    if (!$scope.arduinoConnected)
       Model.show('api/push', action);    
     $rootScope.$broadcast("PUSH-ACTION", { action: action });
   };
