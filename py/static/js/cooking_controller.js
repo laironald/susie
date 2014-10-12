@@ -22,6 +22,7 @@ var app = angular.module('cooking', [
 app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
   $scope.main = "ready?";
   $scope.status = "get started";
+  $scope.custom_status = "shake it up";
   $scope.processing = false;
   $scope.pushed = function(action) {
     $rootScope.$broadcast("PUSH-ACTION", { action: action });
@@ -33,14 +34,26 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
   // ROOTSCOPE
   $rootScope.$on("PUSH-ACTION", function(evt, args) {
     var action = args.action;
-    if ($scope.main !== action && !$scope.processing) {
-      $scope.processing = true;
-      $scope.main = action;
-      $rootScope.$broadcast("ON-SWITCH", { action: action });
-      Model.show('push', action).success(function(res) {
-        $scope.status = res;
-        $scope.processing = false;
-      });
+    if (!$scope.processing) {
+      if (action == 'on' || action == 'off') {
+        if ($scope.main !== action) {
+          $scope.processing = true;
+          $scope.main = action;
+          $rootScope.$broadcast("ON-SWITCH", { action: action });
+          Model.show('push', action).success(function(res) {
+            $scope.status = res;
+            $scope.processing = false;
+          });
+        }
+      } else {
+        if ($scope.custom_text !== action)
+        $scope.processing = true;
+        Model.show('push', action).success(function(res) {
+          $scope.custom_status = res;
+          $scope.processing = false;
+        });
+      }
+
     }
   });
 
@@ -86,6 +99,9 @@ app.controller("MainController", ['$scope', '$rootScope', function($scope, $root
 
 
 app.controller("CustomController", ['$scope', '$rootScope', function($scope, $rootScope) {
+  $scope.customFinish = function() {
+    $rootScope.$broadcast("PUSH-ACTION", { action: $scope.custom_text });
+  };
 }]);
 
 

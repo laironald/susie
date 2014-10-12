@@ -4,7 +4,13 @@ $border-color: #dddddd;
 .app-body {
   background: $background-color;
   padding: 60px 10px !important;
+  .app-content {
+    overflow: auto !important;
+  }
 }
-.app-content {
-  overflow: auto !important;
+.form-horizontal {
+  overflow: hidden;
+  .form-control {
+    font-size: 16px;
+  }
 }
