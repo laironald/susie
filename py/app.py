@@ -10,9 +10,9 @@ from config import pushr, pushr_key
 # /push/<item>  = submit command
 
 app = Flask(__name__, static_folder='static', static_url_path='')
+app.debug = True
 Scss(app, static_dir='static', asset_dir='assets')
 
-app.debug = True
 
 #################
 ## web app 

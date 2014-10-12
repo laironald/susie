@@ -1,1 +1,14 @@
 {% extends "layouts/app.html" %}
+
+{% block overlay %}
+  <div overlay="helpOverlay">
+  <h4 class="overlay-title">Cooking Robot</h4>
+    <p>
+      Cooking Robot is a VaporWare production
+    </p>
+    <p toggle="off" bubble target="helpOverlay">
+      <span class="btn btn-primary">Ok</span>
+      <span class="btn btn-default">Cancel</span>
+    </p>  
+  </div>
+{% endblock %}

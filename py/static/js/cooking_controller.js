@@ -1,10 +1,9 @@
 // checkout: http://mobileangularui.com/
 
 var app = angular.module('cooking', [
-  'ngRoute'
-]);
-
-app.config(['$routeProvider', function($routeProvider) {
+  'ngRoute',
+  'mobile-angular-ui'
+]).config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/', {
     controller:'MainController',
     templateUrl:'index_main.html'
@@ -19,31 +18,55 @@ app.config(['$routeProvider', function($routeProvider) {
 /* CONTROLLERS */
 
 app.controller("CookingController", ['$scope', '$rootScope', function($scope, $rootScope) {
-  $rootScope.$on("CHANGE_PAGE", function(evt, args) {
-    $scope.page = args.page;
+  $scope.on = false;
+  $scope.pushed = function(action) {
+    $rootScope.$broadcast("PUSH-ACTION", { action: action });
+  };
+  $scope.toggleOn = function(action) {
+    if (action == 'on' || action == 'off') {
+      $scope.on = (action == 'on');
+    }
+  };
+  $scope.overlay = function(overlay) {
+    console.log(overlay);
+    $rootScope.toggle(overlay, 'on');
+  };
+  // ROOTSCOPE
+  $rootScope.$on("ON-SWITCH", function(evt, args) {
+    $scope.toggleOn(args.action);
   });
 }]);
 
 app.controller("MainController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
-  $rootScope.$broadcast("CHANGE_PAGE", { page: "home" });
   $scope.main = "main";
   $scope.processing = false;
 
   // ---------------------- //
 
+  $scope.pushed = function(action) {
+    if ($scope.main !== action && !$scope.processing) {
+      $scope.processing = true;
+      $scope.main = action;
+      $rootScope.$broadcast("ON-SWITCH", { action: action });
+      Model.show('push', action).success(function(res) {
+        $scope.status = res;
+        $scope.processing = false;
+      });
+    }
+  };
+
+  // PUSHER
   $scope.pusher = new Pusher( $('.pusher').data('key') );
   $scope.channel = $scope.pusher.subscribe( $(".pusher").data("channel-name") );
   $scope.channel.bind('PUSH-EVENT', function(data) {
     $scope.$apply(function() {
-      if ($scope.main !== data.main && !$scope.processing) {
-        $scope.processing = true;
-        $scope.main = data.main;
-        Model.show('push', data.main).success(function(res) {
-          $scope.status = res;
-          $scope.processing = false;
-        });
-      }
+      $scope.pushed(data.main);
     });
+  });
+
+  // ROOTSCOPE
+  $rootScope.$on("PUSH-ACTION", function(evt, args) {
+    $scope.pushed(args.action);
   });
 
 }]);
