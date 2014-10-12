@@ -36,7 +36,6 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
   // ROOTSCOPE
   $rootScope.$on("PUSH-ACTION", function(evt, args) {
     var action = args.action;
-    console.log(evt, args);
     if (action == 'on' || action == 'off') {
       if (args.status || !$scope.arduino_connected) {
         $scope.main = args.action;
@@ -90,7 +89,7 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
 }]);
 
 
-app.controller("MainController", ['$scope', '$rootScope', function($scope, $rootScope) {
+app.controller("MainController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
   function initialize() {
     if ($scope.main == 'on') {
       $scope.on = true;
@@ -105,13 +104,15 @@ app.controller("MainController", ['$scope', '$rootScope', function($scope, $root
     }
   };
   $scope.clickOn = function() {
-    if ($scope.on) {
-      $rootScope.$broadcast("PUSH-ACTION", { action: 'on' });
-    } else {
-      $rootScope.$broadcast("PUSH-ACTION", { action: 'off' });
+    var action = ($scope.on) ? 'on' : 'off';
+    if (!$scope.arduino_connected) {
+      Model.show('api/push', action).success(function(res) {
+        $scope.status = res;
+        $scope.processing = false;
+      });
     }
+    $rootScope.$broadcast("PUSH-ACTION", { action: action });
   };
-
   // ROOTSCOPE
   $rootScope.$on("ON-SWITCH", function(evt, args) {
     $scope.toggleOn(args.action);
@@ -120,9 +121,16 @@ app.controller("MainController", ['$scope', '$rootScope', function($scope, $root
 }]);
 
 
-app.controller("CustomController", ['$scope', '$rootScope', function($scope, $rootScope) {
+app.controller("CustomController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
   $scope.customFinish = function() {
-    $rootScope.$broadcast("PUSH-ACTION", { action: $scope.custom_text });
+    var action = $scope.custom_text;
+    if (!$scope.arduino_connected) {
+      Model.show('api/push', action).success(function(res) {
+        $scope.status = res;
+        $scope.processing = false;
+      });
+    }
+    $rootScope.$broadcast("PUSH-ACTION", { action: action });
   };
 }]);
 
