@@ -1,4 +1,4 @@
 pyserial
 flask
-
+pusher
 Flask-Scss
