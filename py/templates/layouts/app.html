@@ -21,7 +21,7 @@
     <span class="pusher" data-key='{{ pusher_key }}' data-channel-name="app-channel"></span>
 
     <div class="sidebar sidebar-left" toggleable parent-active-class="sidebar-left-in" id="mainSidebar">
-      <h1 class="app-name">Cooking</h1>
+      <h1 class="app-name">CookingRobot</h1>
       <div class="scrollable">
         <div class="scrollable-content">
           <div class="list-group" toggle="off" bubble target="mainSidebar">
@@ -35,7 +35,7 @@
       <!-- Navbars -->
       <div class="navbar navbar-app navbar-absolute-top">
         <div class="navbar-brand navbar-brand-center" yield-to="title">
-          <span>Cooking</span>
+          <span>CookingRobot</span>
         </div>
 
         <div class="btn-group pull-left">
@@ -55,11 +55,11 @@
 
       <div class="navbar navbar-app navbar-absolute-bottom">
         <div class="btn-group justified">
-          <a href="" data-ng-hide="on" data-ng-click="pushed('on')" class="btn btn-navbar btn-icon-only">
-            <i class="fa fa-toggle-off fa-navbar"></i> On
+          <a href="#/" class="btn btn-navbar btn-icon-only">
+            <i class="fa fa-home fa-navbar"></i>
           </a>
-          <a href="" data-ng-show="on" data-ng-click="pushed('off')" class="btn btn-navbar btn-icon-only">
-            <i class="fa fa-toggle-on fa-navbar"></i> On
+          <a href="#/custom" class="btn btn-navbar btn-icon-only">
+            <i class="fa fa-tasks fa-navbar"></i>
           </a>
         </div>
       </div>

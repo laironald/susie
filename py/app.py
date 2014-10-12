@@ -21,9 +21,9 @@ Scss(app, static_dir='static', asset_dir='assets')
 def index():
   return render_template('views/index.html', controller='index', pusher_key=pushr_key)
 
-@app.route('/index_main.html')
-def index_main():
-  return render_template('views/index_main.html', controller='index')
+@app.route('/index_<tab>.html')
+def index_main(tab):
+  return render_template('views/index_{0}.html'.format(tab), controller='index')
 
 
 #################

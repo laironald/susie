@@ -7,43 +7,32 @@ var app = angular.module('cooking', [
   $routeProvider.when('/', {
     controller:'MainController',
     templateUrl:'index_main.html'
-  }).when('/analysis', {
-    controller:'AnalysisController',
-    templateUrl:'index_analysis.html'
+  }).when('/custom', {
+    controller:'CustomController',
+    templateUrl:'index_custom.html'
   }).otherwise({
     redirectTo:'/'
   });
 }]);
 
+
+
 /* CONTROLLERS */
 
-app.controller("CookingController", ['$scope', '$rootScope', function($scope, $rootScope) {
-  $scope.on = false;
+app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
+  $scope.main = "ready?";
+  $scope.status = "get started";
+  $scope.processing = false;
   $scope.pushed = function(action) {
     $rootScope.$broadcast("PUSH-ACTION", { action: action });
   };
-  $scope.toggleOn = function(action) {
-    if (action == 'on' || action == 'off') {
-      $scope.on = (action == 'on');
-    }
-  };
   $scope.overlay = function(overlay) {
-    console.log(overlay);
     $rootScope.toggle(overlay, 'on');
   };
+
   // ROOTSCOPE
-  $rootScope.$on("ON-SWITCH", function(evt, args) {
-    $scope.toggleOn(args.action);
-  });
-}]);
-
-app.controller("MainController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
-  $scope.main = "main";
-  $scope.processing = false;
-
-  // ---------------------- //
-
-  $scope.pushed = function(action) {
+  $rootScope.$on("PUSH-ACTION", function(evt, args) {
+    var action = args.action;
     if ($scope.main !== action && !$scope.processing) {
       $scope.processing = true;
       $scope.main = action;
@@ -53,23 +42,53 @@ app.controller("MainController", ['$scope', '$rootScope', 'Model', function($sco
         $scope.processing = false;
       });
     }
-  };
+  });
 
   // PUSHER
   $scope.pusher = new Pusher( $('.pusher').data('key') );
   $scope.channel = $scope.pusher.subscribe( $(".pusher").data("channel-name") );
   $scope.channel.bind('PUSH-EVENT', function(data) {
     $scope.$apply(function() {
-      $scope.pushed(data.main);
+      $rootScope.$broadcast("PUSH-ACTION", { action: data.main });
     });
   });
+}]);
+
+
+app.controller("MainController", ['$scope', '$rootScope', function($scope, $rootScope) {
+  function initialize() {
+    if ($scope.main == 'on') {
+      $scope.on = true;
+    } else {
+      $scope.off = true;
+    }
+  };
+  initialize();
+  $scope.toggleOn = function(action) {
+    if (action == 'on' || action == 'off') {
+      $scope.on = (action == 'on');
+    }
+  };
+  $scope.clickOn = function() {
+    if ($scope.on) {
+      $rootScope.$broadcast("PUSH-ACTION", { action: 'on' });
+    } else {
+      $rootScope.$broadcast("PUSH-ACTION", { action: 'off' });
+    }
+  };
 
   // ROOTSCOPE
-  $rootScope.$on("PUSH-ACTION", function(evt, args) {
-    $scope.pushed(args.action);
+  $rootScope.$on("ON-SWITCH", function(evt, args) {
+    $scope.toggleOn(args.action);
   });
 
 }]);
+
+
+app.controller("CustomController", ['$scope', '$rootScope', function($scope, $rootScope) {
+}]);
+
+
 
 /* FACTORIES */
 
