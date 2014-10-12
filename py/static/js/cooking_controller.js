@@ -22,6 +22,7 @@ var app = angular.module('cooking', [
 app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
   $scope.main = "ready?";
   $scope.status = "get started";
+  $scope.custom_main = "";
   $scope.custom_status = "shake it up";
   $scope.processing = false;
   $scope.pushed = function(action) {
@@ -46,12 +47,14 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
           });
         }
       } else {
-        if ($scope.custom_text !== action)
-        $scope.processing = true;
-        Model.show('push', action).success(function(res) {
-          $scope.custom_status = res;
-          $scope.processing = false;
-        });
+        if ($scope.custom_main !== action) {
+          $scope.processing = true;
+          $scope.custom_main = action;
+          Model.show('push', action).success(function(res) {
+            $scope.custom_status = res;
+            $scope.processing = false;
+          });
+        }
       }
 
     }
