@@ -22,19 +22,18 @@ class Arduino:
           self.ser = ser
           break
 
+# if segment fault error, use this:
+# http://stackoverflow.com/questions/19531969/segmentation-fault-11-in-os-x
+
+def ports():
+  return 
 
 # Arduino Playground
 # http://playground.arduino.cc/Interfacing/Python
 def push(item):
 
   arm = Arduino()
-  print arm.ser.writable()
-  print arm.ser.readable()
-
   time.sleep(2)
-
-  print arm.ser.writable()
-  print arm.ser.readable()
 
   arm.ser.write(item)
   output = arm.ser.readlines()
