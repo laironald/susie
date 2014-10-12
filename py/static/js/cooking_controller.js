@@ -21,11 +21,14 @@ var app = angular.module('cooking', [
 
 app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
   // variable called arduino_connected
-  $scope.main = "ready?";
-  $scope.status = "get started";
-  $scope.custom_main = "";
-  $scope.custom_status = "shake it up";
-  $scope.processing = false;
+  $scope.Config = {
+    devices: []
+  };
+  $scope.Main = "ready?";
+  $scope.Status = "get started";
+  $scope.CustomMain = "";
+  $scope.CustomStatus = "shake it up";
+  $scope.Processing = false;
   $scope.pushed = function(action) {
     $rootScope.$broadcast("PUSH-ACTION", { action: action });
   };
@@ -39,40 +42,40 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
     console.log(args);
     if (action == 'on' || action == 'off') {
       if (args.status || !$scope.arduino_connected) {
-        $scope.main = args.action;
+        $scope.Main = args.action;
         if (args.status) {
-          $scope.status = args.status;          
-          $scope.processing = false;
+          $scope.Status = args.status;          
+          $scope.Processing = false;
         } else {
-          $scope.processing = true;
+          $scope.Processing = true;
         }
       } else {
-        if ($scope.main !== action && !$scope.processing) {
-          $scope.processing = true;
-          $scope.main = action;
+        if ($scope.Main !== action && !$scope.Processing) {
+          $scope.Processing = true;
+          $scope.Main = action;
           Model.show('api/push', action).success(function(res) {
-            $scope.status = res;
-            $scope.processing = false;
+            $scope.Status = res;
+            $scope.Processing = false;
           });
         }
       }
       $rootScope.$broadcast("ON-SWITCH", { action: action });
     } else {
       if (args.status || !$scope.arduino_connected) {
-        $scope.custom_main = args.action;
+        $scope.CustomMain = args.action;
         if (args.status) {
-          $scope.custom_status = args.status;
-          $scope.processing = false;
+          $scope.CustomStatus = args.status;
+          $scope.Processing = false;
         } else {
-          $scope.processing = true;
+          $scope.Processing = true;
         }
       } else {
-        if ($scope.custom_main !== action && !$scope.processing) {
-          $scope.processing = true;
-          $scope.custom_main = action;
+        if ($scope.CustomMain !== action && !$scope.Processing) {
+          $scope.Processing = true;
+          $scope.CustomMain = action;
           Model.show('api/push', action).success(function(res) {
-            $scope.custom_status = res;
-            $scope.processing = false;
+            $scope.CustomStatus = res;
+            $scope.Processing = false;
           });
         }
       }
@@ -87,12 +90,18 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
       $rootScope.$broadcast("PUSH-ACTION", data);
     });
   });
+  /* initialize Arduino */
+  $scope.channel.bind('INIT-EVENT', function(data) {
+    $scope.$apply(function() {
+      $rootScope.$broadcast("PUSH-ACTION", data);
+    });
+  });
 }]);
 
 
 app.controller("MainController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
   function initialize() {
-    if ($scope.main == 'on') {
+    if ($scope.Main == 'on') {
       $scope.on = true;
     } else {
       $scope.off = true;
@@ -126,6 +135,8 @@ app.controller("CustomController", ['$scope', '$rootScope', 'Model', function($s
     $rootScope.$broadcast("PUSH-ACTION", { action: action });
   };
 }]);
+
+
 
 
 

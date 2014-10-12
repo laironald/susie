@@ -3,6 +3,7 @@ from flask import request, session
 from flask.ext.scss import Scss
 
 import uarm
+import uuid # unique identifier
 from config import pushr, pushr_key
 
 # /                = index
@@ -13,6 +14,7 @@ app = Flask(__name__, static_folder='static', static_url_path='')
 app.debug = True
 Scss(app, static_dir='static', asset_dir='assets')
 
+UUID = str(uuid.uuid1())
 
 #################
 ## web app 
@@ -21,6 +23,7 @@ Scss(app, static_dir='static', asset_dir='assets')
 def index():
   arm = uarm.Arduino()
   active = bool(arm.ser)*1
+  pushr['app-channel'].trigger('INIT-EVENT', { 'active': active, 'UUID': UUID });
   return render_template('views/index.html', controller='index', pusher_key=pushr_key, active=active)
 
 # @app.route('/index_<tab>.html')

@@ -25,13 +25,13 @@
 
       <div class="panel">
         <div class="panel-heading">
-          <h2 class="panel-title">{{ main }}</h2>
+          <h2 class="panel-title">{{ Main }}</h2>
         </div>
         <div class="panel-body">
           <span data-ng-show="processing">
             <i class='fa fa-spin fa-cog'></i> processing...
           </span>
-          <span data-ng-hide="processing">{{ status }}</span>
+          <span data-ng-hide="processing">{{ Status }}</span>
         </div>
       </div>
       <switch ng-model="on" data-ng-click="clickOn()"></switch>
@@ -57,7 +57,7 @@
           <span data-ng-show="processing">
             <i class='fa fa-spin fa-cog'></i> processing...
           </span>
-          <span data-ng-hide="processing">{{ custom_status }}</span>
+          <span data-ng-hide="processing">{{ CustomStatus }}</span>
         </div>
       </div>
     </script>
