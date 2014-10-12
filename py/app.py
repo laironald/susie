@@ -39,11 +39,7 @@ def listen():
 @app.route('/api/push/<action>')
 def push(action):
   pushr['app-channel'].trigger('PUSH-EVENT', {'action': action});
-  status = uarm.push(str(action))
-  if status:
-    status = "".join(status)
-  else:
-    status = "device is not connected"
+  status = "".join(uarm.push(str(action)))
   pushr['app-channel'].trigger('PUSH-EVENT', {'action': action, 'status': status});
   return status
 
