@@ -28,7 +28,7 @@ class Arduino:
 # http://playground.arduino.cc/Interfacing/Python
 def push(item):
 
-  output = ""
+  output = None
   arm = Arduino()
 
   if arm.ser:

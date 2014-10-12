@@ -23,10 +23,9 @@ def index():
   active = bool(arm.ser)*1
   return render_template('views/index.html', controller='index', pusher_key=pushr_key, active=active)
 
-@app.route('/index_<tab>.html')
-def index_main(tab):
-  return render_template('views/index_{0}.html'.format(tab), controller='index')
-
+# @app.route('/index_<tab>.html')
+# def index_main(tab):
+#   return render_template('views/index_{0}.html'.format(tab), controller='index')
 
 #################
 ## commands
@@ -37,10 +36,16 @@ def listen():
   # return "".join(uarm.connect(item))
   return uarm.listen()
 
-@app.route('/api/push/<item>')
-def push(item):
-  pushr['app-channel'].trigger('PUSH-EVENT', {'main': item});
-  return "".join(uarm.push(str(item)))
+@app.route('/api/push/<action>')
+def push(action):
+  pushr['app-channel'].trigger('PUSH-EVENT', {'action': action});
+  status = uarm.push(str(action))
+  if status:
+    status = "".join(status)
+  else:
+    status = "device is not connected"
+  pushr['app-channel'].trigger('PUSH-EVENT', {'action': action, 'status': status});
+  return status
 
 if __name__ == '__main__':
   app.run()

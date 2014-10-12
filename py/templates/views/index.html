@@ -12,3 +12,55 @@
     </p>  
   </div>
 {% endblock %}
+
+{% block templates %}
+  {% raw %}
+    <script type="text/ng-template" id="index_main.html">
+      <div data-ng-hide="arduino_connected">
+        <div class="alert alert-warning" role="alert">
+          Warning: Arduino not currently connected. 
+          <a href="javascript:window.location.reload();"><i class="fa fa-refresh"></i> Refresh</a>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-heading">
+          <h2 class="panel-title">{{ main }}</h2>
+        </div>
+        <div class="panel-body">
+          <span data-ng-show="processing">
+            <i class='fa fa-spin fa-cog'></i> processing...
+          </span>
+          <span data-ng-hide="processing">{{ status }}</span>
+        </div>
+      </div>
+      <switch ng-model="on" data-ng-click="clickOn()"></switch>
+    </script>
+
+    <script type="text/ng-template" id="index_custom.html">
+      <form class="form-horizontal" role="form">
+        <div class="form-group">
+          <div class="col-sm-10">
+            <input data-ng-model="custom_text" 
+              type="text" class="form-control" 
+              placeholder="type in whatever you want..." 
+              data-ng-blur="customFinish()">
+          </div>
+        </div>
+      </form>
+
+      <div class="panel">
+        <div class="panel-heading">
+          <h2 class="panel-title"></h2>
+        </div>
+        <div class="panel-body">
+          <span data-ng-show="processing">
+            <i class='fa fa-spin fa-cog'></i> processing...
+          </span>
+          <span data-ng-hide="processing">{{ custom_status }}</span>
+        </div>
+      </div>
+    </script>
+
+  {% endraw %}
+{% endblock %}

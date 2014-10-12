@@ -36,19 +36,38 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
   // ROOTSCOPE
   $rootScope.$on("PUSH-ACTION", function(evt, args) {
     var action = args.action;
-    if (!$scope.processing) {
-      if (action == 'on' || action == 'off') {
-        if ($scope.main !== action) {
+    console.log(evt, args);
+    if (action == 'on' || action == 'off') {
+      if (args.status || !$scope.arduino_connected) {
+        $scope.main = args.action;
+        if (args.status) {
+          $scope.status = args.status;          
+          $scope.processing = false;
+        } else {
+          $scope.processing = true;
+        }
+      } else {
+        if ($scope.main !== action && !$scope.processing) {
           $scope.processing = true;
           $scope.main = action;
-          $rootScope.$broadcast("ON-SWITCH", { action: action });
           Model.show('api/push', action).success(function(res) {
             $scope.status = res;
             $scope.processing = false;
           });
         }
+      }
+      $rootScope.$broadcast("ON-SWITCH", { action: action });
+    } else {
+      if (args.status || !$scope.arduino_connected) {
+        $scope.custom_main = args.action;
+        if (args.status) {
+          $scope.custom_status = args.status;
+          $scope.processing = false;
+        } else {
+          $scope.processing = true;
+        }
       } else {
-        if ($scope.custom_main !== action) {
+        if ($scope.custom_main !== action && !$scope.processing) {
           $scope.processing = true;
           $scope.custom_main = action;
           Model.show('api/push', action).success(function(res) {
@@ -57,7 +76,6 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
           });
         }
       }
-
     }
   });
 
@@ -66,7 +84,7 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
   $scope.channel = $scope.pusher.subscribe( $(".pusher").data("channel-name") );
   $scope.channel.bind('PUSH-EVENT', function(data) {
     $scope.$apply(function() {
-      $rootScope.$broadcast("PUSH-ACTION", { action: data.main });
+      $rootScope.$broadcast("PUSH-ACTION", data);
     });
   });
 }]);
