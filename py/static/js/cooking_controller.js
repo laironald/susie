@@ -36,6 +36,7 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
   // ROOTSCOPE
   $rootScope.$on("PUSH-ACTION", function(evt, args) {
     var action = args.action;
+    console.log(args);
     if (action == 'on' || action == 'off') {
       if (args.status || !$scope.arduino_connected) {
         $scope.main = args.action;
