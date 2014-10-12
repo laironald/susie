@@ -7,6 +7,13 @@ sudo pip install -r requirements.txt
 sudo pip install Flask-Scss
 ```
 
+install brew
+=======
+
+```
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+brew install node
+```
 
 override uArm File
 =======
