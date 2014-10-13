@@ -67,6 +67,7 @@
       <div class="list-group">
         <a data-ng-repeat="device in Config.devices" 
            data-ng-class="{ 'active': device == MeDevice }"
+           href=""
            class="list-group-item">
           {{ device.uuid }}
           <span data-ng-show="device.arduino">

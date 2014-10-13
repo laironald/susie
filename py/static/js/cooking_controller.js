@@ -26,7 +26,8 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
   // variable called ArduinoConnected
   $scope.MeDevice = 'Me';
   $scope.Config = {
-    devices: []
+    devices: [],
+    selectedDevice: null
   };
   $scope.Main = "ready?";
   $scope.Status = "get started";
