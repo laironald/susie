@@ -143,12 +143,11 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
 
 
 app.controller("MainController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
+}]);
+
+app.controller("CustomController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
   function initialize() {
-    if ($scope.Main == 'on') {
-      $scope.on = true;
-    } else {
-      $scope.off = true;
-    }
+    $scope.on = ($scope.Main == 'on');
   };
   initialize();
   $scope.toggleOn = function(action) {
@@ -162,20 +161,16 @@ app.controller("MainController", ['$scope', '$rootScope', 'Model', function($sco
       Model.show('api/push', action);
     $rootScope.$broadcast("PUSH-ACTION", { action: action });
   };
-  // ROOTSCOPE
-  $rootScope.$on("ON-SWITCH", function(evt, args) {
-    $scope.toggleOn(args.action);
-  });
-
-}]);
-
-app.controller("CustomController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
   $scope.customFinish = function() {
     var action = $scope.customText;
     if (!$scope.ArduinoConnected)
       Model.show('api/push', action);    
     $rootScope.$broadcast("PUSH-ACTION", { action: action });
   };
+  // ROOTSCOPE
+  $rootScope.$on("ON-SWITCH", function(evt, args) {
+    $scope.toggleOn(args.action);
+  });
 }]);
 
 app.controller("ArduinosController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
