@@ -100,24 +100,24 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
     });
   });
   $scope.presenceChannel.bind('pusher:member_removed', function(member) {
-    console.log('member_removed');
-    console.log(member.info);
-    console.log('-----');
-    $scope.presenceChannel.members.each(function(m) {
-      console.log(m.info);
+    $scope.$apply(function() {
+      $scope.Config.devices.splice($scope.Config.devices.indexOf(member.info), 1);
     });
   });
   $scope.presenceChannel.bind('pusher:member_added', function(member) {
-    console.log('member_added');
-    console.log(member.info);
+    $scope.$apply(function() {
+      $scope.Config.devices.push(member.info);
+    });
   });
   $scope.presenceChannel.bind('pusher:subscription_succeeded', function(members) {
     $scope.$apply(function() {
-      console.log('subscription_succeeded');
-      members.each(function(member) {
-        console.log(member.info);
-      });
       $scope.MeDevice = members.me.info;
+      $scope.Config.devices = [ members.me.info ];
+      members.each(function(member) {
+        if (member.info != members.me.info) {
+          $scope.Config.devices.push(member.info);
+        }
+      });
     });
   });
 
