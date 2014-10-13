@@ -7,3 +7,4 @@ pushr = pusher.Pusher(
 pushrKey = 'c4234ba9ce1c39c016fd'
 
 publicChannel = 'public-channel'
+presenceChannel = 'presence-channel'

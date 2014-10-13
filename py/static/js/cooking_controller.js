@@ -85,19 +85,31 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
   });
 
   // PUSHER
-  $scope.pusher = new Pusher( $('.pusher').data('key') );
+  $scope.pusher = new Pusher( $('.pusher').data('key'), {
+    authEndpoint: '/api/auth'
+  });
   $scope.publicChannel = $scope.pusher.subscribe( $(".pusher").data('public') );
-  // $scope.presenceChannel = $scope.pusher.subscribe( $(".pusher").data('presence') );
+  $scope.presenceChannel = $scope.pusher.subscribe( $(".pusher").data('presence') );
 
   $scope.publicChannel.bind('PUSH-EVENT', function(data) {
     $scope.$apply(function() {
       $rootScope.$broadcast("PUSH-ACTION", data);
     });
   });
-  // $scope.presenceChannel.bind('pusher:member_added', function(member) {
-  //   // for example:
-  //   console.log(member);
-  // });
+  $scope.presenceChannel.bind('pusher:member_removed', function(member) {
+    console.log('member_removed');
+    console.log($scope.presenceChannel.members);
+    console.log(member);
+  });
+  $scope.presenceChannel.bind('pusher:member_added', function(member) {
+    console.log('member_added');
+    console.log($scope.presenceChannel.members);
+    console.log(member);
+  });
+  $scope.presenceChannel.bind('pusher:subscription_succeeded', function(members) {
+    console.log('subscription_succeeded');
+    console.log(members);
+  });
 
 }]);
 

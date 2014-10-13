@@ -1,8 +1,9 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, Response
 from flask import request, session
 from flask.ext.scss import Scss
 
 import uarm
+import json
 import uuid # unique identifier
 from config import *
 
@@ -35,6 +36,21 @@ def index():
 
 #################
 ## commands
+
+# create endpoint for authentication
+@app.route('/api/auth', methods=['POST'])
+def auth():
+  channelName = request.form['channel_name']
+  socketId = request.form['socket_id']
+  channelData = {'user_id': socketId}
+  channelData['user_info'] = {
+    'UUID': UUID
+  }
+  authCode = pushr[channelName].authenticate(socketId, channelData)
+
+  print "hello??? {0}".format(str(channelData))
+
+  return Response(json.dumps(authCode), mimetype='application/javascript')
 
 @app.route('/api/listen')
 def listen():
