@@ -6,10 +6,13 @@ var app = angular.module('cooking', [
 ]).config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/', {
     controller:'MainController',
-    templateUrl:'indexMain.html'
+    templateUrl:'main.html'
   }).when('/custom', {
     controller:'CustomController',
-    templateUrl:'indexCustom.html'
+    templateUrl:'custom.html'
+  }).when('/arduinos', {
+    controller:'ArduinosController',
+    templateUrl:'arduinos.html'
   }).otherwise({
     redirectTo:'/'
   });
@@ -155,6 +158,8 @@ app.controller("CustomController", ['$scope', '$rootScope', 'Model', function($s
   };
 }]);
 
+app.controller("ArduinosController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
+}]);
 
 
 
