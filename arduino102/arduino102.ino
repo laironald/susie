@@ -3,8 +3,8 @@ Sets arm positions based on numeric values coming over serial
 This version only echos back values
 
 To set variables, use this format on the serial line
-  height:50
   reach:-5
+  height:50
   twist:90
   wrist:-110
   on
@@ -148,11 +148,15 @@ void getData()
 
 void moveArm()
 {
-  //  uarm.setPosition(LeftServo, RightServo, RotServo, HandRotServo); 
-  Serial.println("moveArm");
-  Serial.println(LeftServo);
-  Serial.println(RightServo);
-  Serial.println(RotServo);
+  uarm.setPosition(LeftServo, RightServo, RotServo, HandRotServo);
+
+  Serial.print("reach:");
+  Serial.print(LeftServo);
+  Serial.print("  height:");
+  Serial.print(RightServo);
+  Serial.print("  twist:");
+  Serial.print(RotServo);
+  Serial.print("  wrist:");
   Serial.println(HandRotServo);
 
 }
