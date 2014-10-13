@@ -63,13 +63,21 @@
     </script>
 
     <script type="text/ng-template" id="arduinos.html">
-      <ul class="list-group">
-        <li class="list-group-item active">Cras justo odio</li>
-        <li class="list-group-item">Dapibus ac facilisis in</li>
-        <li class="list-group-item">Morbi leo risus</li>
-        <li class="list-group-item">Porta ac consectetur ac</li>
-        <li class="list-group-item">Vestibulum at eros</li>
-      </ul>
+      <div class="panel" data-ng-cloak>
+        <div class="panel-heading">
+          <h2 class="panel-title">Arduinos</h2>
+        </div>
+        <div class="panel-body">
+          <ul class="list-group">
+            <li class="list-group-item active">{{ MeDevice.uuid }}</li>
+            <li class="list-group-item">Cras justo odio</li>
+            <li class="list-group-item">Dapibus ac facilisis in</li>
+            <li class="list-group-item">Morbi leo risus</li>
+            <li class="list-group-item">Porta ac consectetur ac</li>
+            <li class="list-group-item">Vestibulum at eros</li>
+          </ul>
+        </div>
+      </div>
     </script>
 
   {% endraw %}

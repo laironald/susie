@@ -24,7 +24,7 @@ var app = angular.module('cooking', [
 
 app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
   // variable called ArduinoConnected
-  $scope.MeDevice = null;
+  $scope.MeDevice = 'Me';
   $scope.Config = {
     devices: []
   };
@@ -112,11 +112,13 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
     console.log(member.info);
   });
   $scope.presenceChannel.bind('pusher:subscription_succeeded', function(members) {
-    console.log('subscription_succeeded');
-    members.each(function(member) {
-      console.log(member.info);
+    $scope.$apply(function() {
+      console.log('subscription_succeeded');
+      members.each(function(member) {
+        console.log(member.info);
+      });
+      $scope.MeDevice = members.me.info;
     });
-    $scope.MeDevice = members.me.info;
   });
 
 }]);
