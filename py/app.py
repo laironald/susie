@@ -22,10 +22,6 @@ Scss(app, static_dir='static', asset_dir='assets')
 def index():
   arm = uarm.Arduino()
   active = bool(arm.ser)*1
-  # if arduino is connected, notify everyone
-  # pushr['app-channel'].trigger('INIT-EVENT', { 'active': active, 'UUID': UUID });
-  print active
-
   return render_template('views/index.html', controller='index', pusherKey=pushrKey, active=active)
 
 # @app.route('/index_<tab>.html')
@@ -38,16 +34,18 @@ def index():
 # create endpoint for authentication
 @app.route('/api/auth', methods=['POST'])
 def auth():
+  arm = uarm.Arduino()
+  active = bool(arm.ser)*1
   channelName = request.form['channel_name']
   socketId = request.form['socket_id']
-  channelData = {'user_id': socketId}
+  # RON RON RON
+  # at some point make these user_ids unique
+  channelData = { 'user_id': socketId }
   channelData['user_info'] = {
-    'uuid': str(uuid.uuid1())
+    'uuid': str(uuid.uuid1()),
+    'arduino': active
   }
   authCode = pushr[channelName].authenticate(socketId, channelData)
-
-  print "hello??? {0}".format(str(channelData))
-
   return Response(json.dumps(authCode), mimetype='application/javascript')
 
 @app.route('/api/listen')

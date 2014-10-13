@@ -21,7 +21,7 @@ var app = angular.module('cooking', [
 
 app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
   // variable called ArduinoConnected
-  $scope.CurrentDevice = {};
+  $scope.MeDevice = null;
   $scope.Config = {
     devices: []
   };
@@ -113,8 +113,8 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
     members.each(function(member) {
       console.log(member.info);
     });
+    $scope.MeDevice = members.me.info;
   });
-
 
 }]);
 
