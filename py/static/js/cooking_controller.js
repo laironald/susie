@@ -111,6 +111,7 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
     console.log(members);
   });
 
+
 }]);
 
 
