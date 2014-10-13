@@ -18,9 +18,12 @@
     {% block specific_stylesheets %}{% endblock %}
   </head>
   <body data-ng-controller="CookingController" data-ng-cloak>
-    <span data-ng-init="arduino_connected = {{ active }}"></span>
-    <span class="pusher" data-key='{{ pusher_key }}' data-channel-name="app-channel"></span>
-
+    <span data-ng-init="ArduinoConnected = {{ active }}"></span>
+    <span class="pusher" 
+      data-key='{{ pusherKey }}' 
+      data-presence='presence-channel' 
+      data-public="public-channel">
+    </span>
     <div class="sidebar sidebar-left" toggleable parent-active-class="sidebar-left-in" id="mainSidebar">
       <h1 class="app-name">Cooking Robot</h1>
       <div class="scrollable">
@@ -32,7 +35,6 @@
         </div>
       </div>
     </div>
-
     <div class="app">
       <!-- Navbars -->
       <div class="navbar navbar-app navbar-absolute-top">
@@ -59,6 +61,9 @@
         <div class="btn-group justified">
           <a href="#/" class="btn btn-navbar btn-icon-only">
             <i class="fa fa-home fa-navbar"></i>
+          </a>
+          <a href="#/arduinos" class="btn btn-navbar btn-icon-only">
+            <i class="fa fa-cubes fa-navbar"></i>
           </a>
           <a href="#/custom" class="btn btn-navbar btn-icon-only">
             <i class="fa fa-tasks fa-navbar"></i>

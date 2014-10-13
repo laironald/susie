@@ -4,7 +4,7 @@ from flask.ext.scss import Scss
 
 import uarm
 import uuid # unique identifier
-from config import pushr, pushr_key
+from config import *
 
 # /                = index
 # api/listen       = listen to the Serial Port (WIP)
@@ -23,8 +23,11 @@ UUID = str(uuid.uuid1())
 def index():
   arm = uarm.Arduino()
   active = bool(arm.ser)*1
-  pushr['app-channel'].trigger('INIT-EVENT', { 'active': active, 'UUID': UUID });
-  return render_template('views/index.html', controller='index', pusher_key=pushr_key, active=active)
+  # if arduino is connected, notify everyone
+  # pushr['app-channel'].trigger('INIT-EVENT', { 'active': active, 'UUID': UUID });
+  print active
+
+  return render_template('views/index.html', controller='index', pusherKey=pushrKey, active=active)
 
 # @app.route('/index_<tab>.html')
 # def index_main(tab):
@@ -41,9 +44,9 @@ def listen():
 
 @app.route('/api/push/<action>')
 def push(action):
-  pushr['app-channel'].trigger('PUSH-EVENT', {'action': action});
+  pushr[publicChannel].trigger('PUSH-EVENT', {'action': action});
   status = "".join(uarm.push(str(action)))
-  pushr['app-channel'].trigger('PUSH-EVENT', {'action': action, 'status': status});
+  pushr[publicChannel].trigger('PUSH-EVENT', {'action': action, 'status': status});
   return status
 
 if __name__ == '__main__':

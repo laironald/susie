@@ -20,7 +20,8 @@ var app = angular.module('cooking', [
 /* CONTROLLERS */
 
 app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
-  // variable called arduinoConnected
+  // variable called ArduinoConnected
+  $scope.CurrentDevice = {};
   $scope.Config = {
     devices: []
   };
@@ -29,6 +30,7 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
   $scope.CustomMain = "";
   $scope.CustomStatus = "shake it up";
   $scope.Processing = false;
+
   $scope.pushed = function(action) {
     $rootScope.$broadcast("PUSH-ACTION", { action: action });
   };
@@ -41,7 +43,7 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
     var action = args.action;
     console.log(args);
     if (action == 'on' || action == 'off') {
-      if (args.status || !$scope.arduinoConnected) {
+      if (args.status || !$scope.ArduinoConnected) {
         $scope.Main = args.action;
         if (args.status) {
           $scope.Status = args.status;          
@@ -61,7 +63,7 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
       }
       $rootScope.$broadcast("ON-SWITCH", { action: action });
     } else {
-      if (args.status || !$scope.arduinoConnected) {
+      if (args.status || !$scope.ArduinoConnected) {
         $scope.CustomMain = args.action;
         if (args.status) {
           $scope.CustomStatus = args.status;
@@ -84,18 +86,19 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
 
   // PUSHER
   $scope.pusher = new Pusher( $('.pusher').data('key') );
-  $scope.channel = $scope.pusher.subscribe( $(".pusher").data("channel-name") );
-  $scope.channel.bind('PUSH-EVENT', function(data) {
+  $scope.publicChannel = $scope.pusher.subscribe( $(".pusher").data('public') );
+  // $scope.presenceChannel = $scope.pusher.subscribe( $(".pusher").data('presence') );
+
+  $scope.publicChannel.bind('PUSH-EVENT', function(data) {
     $scope.$apply(function() {
       $rootScope.$broadcast("PUSH-ACTION", data);
     });
   });
-  /* initialize Arduino */
-  $scope.channel.bind('INIT-EVENT', function(data) {
-    $scope.$apply(function() {
-      $rootScope.$broadcast("PUSH-ACTION", data);
-    });
-  });
+  // $scope.presenceChannel.bind('pusher:member_added', function(member) {
+  //   // for example:
+  //   console.log(member);
+  // });
+
 }]);
 
 
@@ -115,7 +118,7 @@ app.controller("MainController", ['$scope', '$rootScope', 'Model', function($sco
   };
   $scope.clickOn = function() {
     var action = ($scope.on) ? 'on' : 'off';
-    if (!$scope.arduinoConnected)
+    if (!$scope.ArduinoConnected)
       Model.show('api/push', action);
     $rootScope.$broadcast("PUSH-ACTION", { action: action });
   };
@@ -126,16 +129,14 @@ app.controller("MainController", ['$scope', '$rootScope', 'Model', function($sco
 
 }]);
 
-
 app.controller("CustomController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
   $scope.customFinish = function() {
     var action = $scope.customText;
-    if (!$scope.arduinoConnected)
+    if (!$scope.ArduinoConnected)
       Model.show('api/push', action);    
     $rootScope.$broadcast("PUSH-ACTION", { action: action });
   };
 }]);
-
 
 
 
