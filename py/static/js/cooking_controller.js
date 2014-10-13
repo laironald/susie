@@ -25,11 +25,15 @@ var app = angular.module('cooking', [
 app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
   // variable called ArduinoConnected
   function initialize() {
-    $scope.MeDevice = 'Me';
+    // sessionStorage.Config = JSON.stringify($scope.Config);
+    // $scope.Config = $.parseJSON(sessionStorage.Config);
+
     $scope.Config = {
+      me: null,
       devices: [],
       selectedDevice: null
     };
+
     $scope.AnyConnected = true;
     $scope.Main = "ready?";
     $scope.Status = "get started";
@@ -107,7 +111,7 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
   $scope.presenceChannel.bind('pusher:member_removed', function(member) {
     $scope.$apply(function() {
       $scope.AnyConnected = false;
-      $scope.Config.devices.splice($scope.Config.devices.indexOf(member.info), 1);
+      $scope.Config.devices.splice($scope.Config.devices.indexOf(member), 1);
       _.each($scope.Config.devices, function(device) {
         if (device.arduino) {
           $scope.AnyConnected = true;
@@ -117,7 +121,7 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
   });
   $scope.presenceChannel.bind('pusher:member_added', function(member) {
     $scope.$apply(function() {
-      $scope.Config.devices.push(member.info);
+      $scope.Config.devices.push(member);
       if (member.info.arduino) {
         $scope.AnyConnected = true;
       }
@@ -126,11 +130,11 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
   $scope.presenceChannel.bind('pusher:subscription_succeeded', function(members) {
     $scope.$apply(function() {
       $scope.AnyConnected = false;
-      $scope.MeDevice = members.me.info;
-      $scope.Config.devices = [ members.me.info ];
+      $scope.Config.me = members.me;
+      $scope.Config.devices = [ members.me ];
       members.each(function(member) {
         if (member.info != members.me.info) {
-          $scope.Config.devices.push(member.info);
+          $scope.Config.devices.push(member);
         }
         if (member.info.arduino) {
           $scope.AnyConnected = true;
