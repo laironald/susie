@@ -1,8 +1,11 @@
 /*
 Sets arm positions based on numeric values coming over serial
-This version only echos back values
 
 To set variables, use this format on the serial line
+  mode:led
+  mode:arm
+  led:on
+  led:off
   reach:-5
   height:50
   twist:90
@@ -17,30 +20,28 @@ To set variables, use this format on the serial line
 #include <UF_uArm.h>
 #include <avr/pgmspace.h>
 
+#define LED_MODE  0
+#define ARM_MODE  1
+
+
 UF_uArm uarm;           // initialize the uArm library 
 String ReadString;
 
 /* SET GLOBAL VARIABLES */
-// int Reach = 50;
-// int Rotation = 30;
-// int d = 50;
-//int leftServoLast = 110;
-//int rightServoLast  = 100;
-//int rotServoLast  = 90;
-// int ledPin = 13;
-
+int LEDPin = 13;
+int LEDValue = LOW;
 int LeftServo = 110;
 int RightServo = 100;
 int RotServo = 90;
 int HandRotServo = 0;
-
+int Mode = LED_MODE;
 
 
 
 void setup() 
 {
   Serial.begin(9600);
-  // pinMode(ledPin, OUTPUT);      // sets the digital pin as output
+  pinMode(LEDPin, OUTPUT);      // sets the digital pin as output
 
   
   int speed = 50;
@@ -59,8 +60,10 @@ void setup()
 
 void loop()
 {
-  getData();
-  moveArm();
+  if(getData())
+  {
+    doAction();
+  }
 }
 
 void serialGetLine()
@@ -75,7 +78,7 @@ void serialGetLine()
 }
 
 
-void getData()
+boolean getData()
 {  
   /*
     Convert serial.read() into a useable string using Arduino?
@@ -89,8 +92,8 @@ void getData()
     if (ReadString == "on")
     {
       Serial.println("switching on");
-      // digitalWrite(ledPin, HIGH);   // sets the LED on
 
+      LEDValue = HIGH;
       LeftServo = 90;
       RightServo = 90;
       RotServo = 70; 
@@ -100,55 +103,79 @@ void getData()
     else if (ReadString == "off")
     {
       Serial.println("switching off");
-      // digitalWrite(ledPin, LOW);   // sets the LED low 
       
+      LEDValue = LOW;
       LeftServo = 110;
       RightServo = 100;
       RotServo = 90;
       HandRotServo = 0;     
-
     }
+
+    else if (ReadString.substring(0,5) == "mode:")
+    {
+      if (ReadString.substring(5) == "led")
+      {
+        Mode=LED_MODE;
+      }
+      else if (ReadString.substring(5) == "arm")
+      {
+        Mode=ARM_MODE;
+      }
+    }
+
+    else if (ReadString.substring(0,4) == "led:")
+    {
+      if (ReadString.substring(4) == "on")
+      {
+        LEDValue = true;
+      }
+      else if (ReadString.substring(4) == "off")
+      {
+        LEDValue = false;
+      }
+    }
+
 
     else if (ReadString.substring(0,6) == "reach:")
     {
       LeftServo = ReadString.substring(6).toInt();
-
     }
 
     else if (ReadString.substring(0,7) == "height:")
     {
       RightServo = ReadString.substring(7).toInt();
-
     }
 
     else if (ReadString.substring(0,6) == "twist:")
     {
       RotServo = ReadString.substring(6).toInt();
-
     }
 
     else if (ReadString.substring(0,6) == "wrist:")
     {
       HandRotServo = ReadString.substring(6).toInt();
-
     }
 
-   
-    /*
-    rightServo = ReadString.toInt();
-    uarm.setPosition(leftServo, rightServo, rotServo, 0); 
-    Serial.println(leftServo);
-    Serial.println(rightServo);
-    Serial.println(rotServo);
-    */
-
+    return true;  // did have data
   }
-  //  ReadString="";
+  
+  else
+  {
+    return false;  // did not have data
+  }
+
 }
 
-void moveArm()
+void doAction()
 {
-  uarm.setPosition(LeftServo, RightServo, RotServo, HandRotServo);
+  if (Mode == ARM_MODE)
+  {
+    uarm.setPosition(LeftServo, RightServo, RotServo, HandRotServo);
+  }
+  else if (Mode == LED_MODE)
+  {
+    digitalWrite(LEDPin, LEDValue);   // sets the LED
+  }
 
   Serial.print("reach:");
   Serial.print(LeftServo);
@@ -157,6 +184,7 @@ void moveArm()
   Serial.print("  twist:");
   Serial.print(RotServo);
   Serial.print("  wrist:");
-  Serial.println(HandRotServo);
-
+  Serial.print(HandRotServo);
+  Serial.print("  led:");
+  Serial.println(LEDValue);
 }
