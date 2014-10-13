@@ -28,13 +28,16 @@ class Arduino:
 # http://playground.arduino.cc/Interfacing/Python
 def push(item):
 
+  output = None
   arm = Arduino()
-  time.sleep(2)
 
-  arm.ser.write(item)
-  output = arm.ser.readlines()
+  if arm.ser:
+    time.sleep(2)
 
-  arm.ser.close()
+    arm.ser.write(item)
+    output = arm.ser.readlines()
+
+    arm.ser.close()
   return output
 
 

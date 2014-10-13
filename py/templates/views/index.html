@@ -1,0 +1,84 @@
+{% extends "layouts/app.html" %}
+
+{% block overlay %}
+  <div overlay="helpOverlay">
+  <h4 class="overlay-title">Cooking Robot</h4>
+    <p>
+      Cooking Robot is a VaporWare production
+    </p>
+    <p toggle="off" bubble target="helpOverlay">
+      <span class="btn btn-primary">Ok</span>
+      <span class="btn btn-default">Cancel</span>
+    </p>  
+  </div>
+{% endblock %}
+
+{% block templates %}
+  {% raw %}
+    <script type="text/ng-template" id="main.html">
+      <div data-ng-hide="ArduinoConnected">
+        <div class="alert alert-warning" role="alert">
+          Warning: Arduino not currently connected. 
+          <a href="javascript:window.location.reload();"><i class="fa fa-refresh"></i> Refresh</a>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-heading">
+          <h2 class="panel-title">{{ Main }}</h2>
+        </div>
+        <div class="panel-body">
+          <span data-ng-show="processing">
+            <i class='fa fa-spin fa-cog'></i> processing...
+          </span>
+          <span data-ng-hide="processing">{{ Status }}</span>
+        </div>
+      </div>
+      <switch ng-model="on" data-ng-click="clickOn()"></switch>
+    </script>
+
+    <script type="text/ng-template" id="custom.html">
+      <form class="form-horizontal" role="form">
+        <div class="form-group">
+          <div class="col-sm-10">
+            <input data-ng-model="customText" 
+              type="text" class="form-control" 
+              placeholder="type in whatever you want..." 
+              data-ng-blur="customFinish()">
+          </div>
+        </div>
+      </form>
+
+      <div class="panel">
+        <div class="panel-heading">
+          <h2 class="panel-title"></h2>
+        </div>
+        <div class="panel-body">
+          <span data-ng-show="processing">
+            <i class='fa fa-spin fa-cog'></i> processing...
+          </span>
+          <span data-ng-hide="processing">{{ CustomStatus }}</span>
+        </div>
+      </div>
+    </script>
+
+    <script type="text/ng-template" id="arduinos.html">
+      <div class="panel" data-ng-cloak>
+        <div class="panel-heading">
+          <h2 class="panel-title">Arduinos</h2>
+        </div>
+        <div class="panel-body">
+          <ul class="list-group">
+            <li class="list-group-item active">{{ MeDevice.uuid }}</li>
+            <li class="list-group-item">Cras justo odio</li>
+            <li class="list-group-item">Dapibus ac facilisis in</li>
+            <li class="list-group-item">Morbi leo risus</li>
+            <li class="list-group-item">Porta ac consectetur ac</li>
+            <li class="list-group-item">Vestibulum at eros</li>
+          </ul>
+        </div>
+      </div>
+    </script>
+
+  {% endraw %}
+{% endblock %}
