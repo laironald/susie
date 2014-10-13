@@ -24,16 +24,20 @@ var app = angular.module('cooking', [
 
 app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
   // variable called ArduinoConnected
-  $scope.MeDevice = 'Me';
-  $scope.Config = {
-    devices: [],
-    selectedDevice: null
-  };
-  $scope.Main = "ready?";
-  $scope.Status = "get started";
-  $scope.CustomMain = "";
-  $scope.CustomStatus = "shake it up";
-  $scope.Processing = false;
+  function initialize() {
+    $scope.MeDevice = 'Me';
+    $scope.Config = {
+      devices: [],
+      selectedDevice: null
+    };
+    $scope.AnyConnected = true;
+    $scope.Main = "ready?";
+    $scope.Status = "get started";
+    $scope.CustomMain = "";
+    $scope.CustomStatus = "shake it up";
+    $scope.Processing = false;
+  }
+  initialize();
 
   $scope.pushed = function(action) {
     $rootScope.$broadcast("PUSH-ACTION", { action: action });
@@ -102,21 +106,34 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
   });
   $scope.presenceChannel.bind('pusher:member_removed', function(member) {
     $scope.$apply(function() {
+      $scope.AnyConnected = false;
       $scope.Config.devices.splice($scope.Config.devices.indexOf(member.info), 1);
+      _.each($scope.Config.devices, function(device) {
+        if (device.arduino) {
+          $scope.AnyConnected = true;
+        }
+      });
     });
   });
   $scope.presenceChannel.bind('pusher:member_added', function(member) {
     $scope.$apply(function() {
       $scope.Config.devices.push(member.info);
+      if (member.info.arduino) {
+        $scope.AnyConnected = true;
+      }
     });
   });
   $scope.presenceChannel.bind('pusher:subscription_succeeded', function(members) {
     $scope.$apply(function() {
+      $scope.AnyConnected = false;
       $scope.MeDevice = members.me.info;
       $scope.Config.devices = [ members.me.info ];
       members.each(function(member) {
         if (member.info != members.me.info) {
           $scope.Config.devices.push(member.info);
+        }
+        if (member.info.arduino) {
+          $scope.AnyConnected = true;
         }
       });
     });
