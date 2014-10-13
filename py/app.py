@@ -1,31 +1,65 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, Response
 from flask import request, session
+from flask.ext.scss import Scss
+
 import uarm
+import json
+import uuid # unique identifier
+from config import *
 
-# /             = index
-# /listen       = listen to the Serial Port (WIP)
-# /push/<item>  = submit command
-
+# /                = index
+# api/listen       = listen to the Serial Port (WIP)
+# api/push/<item>  = submit command
 
 app = Flask(__name__, static_folder='static', static_url_path='')
 app.debug = True
+Scss(app, static_dir='static', asset_dir='assets')
+
+#################
+## web app 
 
 @app.route('/')
 def index():
-    # return render_template('views/index.html', method=method, controller=controller)
-    return "hello"
+  arm = uarm.Arduino()
+  active = bool(arm.ser)*1
+  return render_template('views/index.html', controller='index', pusherKey=pushrKey, active=active)
 
-@app.route('/listen')
+# @app.route('/index_<tab>.html')
+# def index_main(tab):
+#   return render_template('views/index_{0}.html'.format(tab), controller='index')
+
+#################
+## commands
+
+# create endpoint for authentication
+@app.route('/api/auth', methods=['POST'])
+def auth():
+  arm = uarm.Arduino()
+  active = bool(arm.ser)*1
+  channelName = request.form['channel_name']
+  socketId = request.form['socket_id']
+  # RON RON RON
+  # at some point make these user_ids unique
+  channelData = { 'user_id': socketId }
+  channelData['user_info'] = {
+    'uuid': str(uuid.uuid1()),
+    'arduino': active
+  }
+  authCode = pushr[channelName].authenticate(socketId, channelData)
+  return Response(json.dumps(authCode), mimetype='application/javascript')
+
+@app.route('/api/listen')
 def listen():
-    # return render_template('views/index.html', method=method, controller=controller)
-    # return "".join(uarm.connect(item))
-    return uarm.listen()
+  # return render_template('views/index.html', method=method, controller=controller)
+  # return "".join(uarm.connect(item))
+  return uarm.listen()
 
-@app.route('/push/<item>')
-def push(item):
-    # return render_template('views/index.html', method=method, controller=controller)
-    # return "".join(uarm.connect(item))
-    return "".join(uarm.push(str(item)))
+@app.route('/api/push/<action>')
+def push(action):
+  pushr[publicChannel].trigger('PUSH-EVENT', {'action': action});
+  status = "".join(uarm.push(str(action)))
+  pushr[publicChannel].trigger('PUSH-EVENT', {'action': action, 'status': status});
+  return status
 
 if __name__ == '__main__':
-    app.run()
+  app.run()
