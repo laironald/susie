@@ -1,3 +1,7 @@
+/* 
+Turns on/off the built in LED when it receives commands over serial. 
+*/
+
 #include <avr/pgmspace.h>
 
 String readString;
