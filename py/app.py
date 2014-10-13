@@ -15,8 +15,6 @@ app = Flask(__name__, static_folder='static', static_url_path='')
 app.debug = True
 Scss(app, static_dir='static', asset_dir='assets')
 
-UUID = str(uuid.uuid1())
-
 #################
 ## web app 
 
@@ -44,7 +42,7 @@ def auth():
   socketId = request.form['socket_id']
   channelData = {'user_id': socketId}
   channelData['user_info'] = {
-    'UUID': UUID
+    'uuid': str(uuid.uuid1())
   }
   authCode = pushr[channelName].authenticate(socketId, channelData)
 

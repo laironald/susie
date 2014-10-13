@@ -98,17 +98,21 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
   });
   $scope.presenceChannel.bind('pusher:member_removed', function(member) {
     console.log('member_removed');
-    console.log($scope.presenceChannel.members);
-    console.log(member);
+    console.log(member.info);
+    console.log('-----');
+    $scope.presenceChannel.members.each(function(m) {
+      console.log(m.info);
+    });
   });
   $scope.presenceChannel.bind('pusher:member_added', function(member) {
     console.log('member_added');
-    console.log($scope.presenceChannel.members);
-    console.log(member);
+    console.log(member.info);
   });
   $scope.presenceChannel.bind('pusher:subscription_succeeded', function(members) {
     console.log('subscription_succeeded');
-    console.log(members);
+    members.each(function(member) {
+      console.log(member.info);
+    });
   });
 
 
