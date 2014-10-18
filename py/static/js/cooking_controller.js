@@ -178,9 +178,12 @@ app.controller("CustomController", ['$scope', '$rootScope', 'Model', function($s
   };
   $scope.selectSketch = function(sketch) {
     var action = $scope.customText;
-    if (!$scope.ArduinoConnected)
-      Model.show('api/push', action);    
-    $rootScope.$broadcast("PUSH-ACTION", { action: action });
+    $scope.loadingSketch = true;
+    if ($scope.ArduinoConnected)
+      Model.show('api/sketches', sketch).success(function(data) {
+        $scope.Config.selectedSketch = sketch;
+        $scope.loadingSketch = false;
+      });
   };
   // ROOTSCOPE
   $rootScope.$on("ON-SWITCH", function(evt, args) {
