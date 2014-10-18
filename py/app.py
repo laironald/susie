@@ -36,6 +36,8 @@ def index():
 def sketches():
   import os
   path = os.listdir('../sketches')
+  if ".DS_Store" in path:
+    path.remove(".DS_Store")
   return Response(json.dumps(path), mimetype='application/javascript')
 
 @app.route('/api/sketches/<sketch>')
