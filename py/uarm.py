@@ -40,6 +40,16 @@ def push(item):
     arm.ser.close()
   return output
 
+def upload(sketch):
+  import os
+  from subprocess import call
+  current_dir = os.getcwd()
+  os.chdir("../sketches/{0}".format(sketch))
+  call(["ino", "build"])
+  call(["ino", "upload"])
+  os.chdir(current_dir)
+  return "ok"
+
 
 # def listen(item = None):
 #   try:

@@ -31,7 +31,9 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
     $scope.Config = {
       me: null,
       devices: [],
-      selectedDevice: null
+      selectedDevice: null,
+      sketches: [],
+      selectedSketch: null
     };
 
     $scope.AnyConnected = true;
@@ -40,6 +42,9 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
     $scope.CustomMain = "";
     $scope.CustomStatus = "shake it up";
     $scope.Processing = false;
+    Model.index('api/sketches').success(function(data) {
+      $scope.Config.sketches = data;
+    });
   }
   initialize();
 
@@ -166,6 +171,12 @@ app.controller("CustomController", ['$scope', '$rootScope', 'Model', function($s
     $rootScope.$broadcast("PUSH-ACTION", { action: action });
   };
   $scope.customFinish = function() {
+    var action = $scope.customText;
+    if (!$scope.ArduinoConnected)
+      Model.show('api/push', action);    
+    $rootScope.$broadcast("PUSH-ACTION", { action: action });
+  };
+  $scope.selectSketch = function(sketch) {
     var action = $scope.customText;
     if (!$scope.ArduinoConnected)
       Model.show('api/push', action);    

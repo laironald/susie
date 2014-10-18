@@ -58,6 +58,19 @@
           <span data-ng-hide="Processing">{{ CustomStatus }}</span>
         </div>
       </div>
+
+      <div data-ng-show="AnyConnected">
+        <div class="list-group">
+          <a data-ng-repeat="sketch in Config.sketches" 
+             data-ng-class="{ 'active': sketch == Config.selectedSketch }"
+             data-ng-click="selectSketch(sketch)"
+             href=""
+             class="list-group-item">
+            {{ sketch }}
+          </a>
+        </div>
+      </div>
+
     </script>
 
 
