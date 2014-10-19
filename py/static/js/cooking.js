@@ -1,9 +1,15 @@
 // checkout: http://mobileangularui.com/
+// switch this to ionic soon
 
 var app = angular.module('cooking', [
   'ngRoute',
-  'mobile-angular-ui'
-]).config(['$routeProvider', function($routeProvider) {
+  'mobile-angular-ui',
+  'firebase'
+]);
+
+// routes
+
+app.config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/', {
     controller:'MainController',
     templateUrl:'main.html'
@@ -19,14 +25,32 @@ var app = angular.module('cooking', [
 }]);
 
 
-
 /* CONTROLLERS */
 
-app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
+app.controller("CookingController", ['$scope', '$firebase', '$rootScope', 'Model', function($scope, $firebase, $rootScope, Model) {
+
   // variable called ArduinoConnected
+  // sessionStorage.Config = JSON.stringify($scope.Config);
+  // $scope.Config = $.parseJSON(sessionStorage.Config);
   function initialize() {
-    // sessionStorage.Config = JSON.stringify($scope.Config);
-    // $scope.Config = $.parseJSON(sessionStorage.Config);
+
+    var ref = new Firebase("https://glaring-heat-8025.firebaseio.com/config");
+    var sync = $firebase(ref);
+    var syncObject = sync.$asObject();
+    syncObject.$bindTo($scope, "config");
+    syncObject.$loaded(function(data) {
+      if ('$value' in data && data.$value == null) {
+        sync.$set({ 
+          main: 'ready?',
+          status: 'get started',
+          customMain: '',
+          customStatus: 'shake it up',
+          on: false
+        });
+      } else {
+        $scope.config.on = ($scope.config.main == 'on');
+      }
+    });
 
     $scope.Config = {
       me: null,
@@ -35,12 +59,7 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
       sketches: [],
       selectedSketch: null
     };
-
     $scope.AnyConnected = true;
-    $scope.Main = "ready?";
-    $scope.Status = "get started";
-    $scope.CustomMain = "";
-    $scope.CustomStatus = "shake it up";
     $scope.Processing = false;
     Model.index('api/sketches').success(function(data) {
       $scope.Config.sketches = data;
@@ -61,19 +80,19 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
     console.log(args);
     if (action == 'on' || action == 'off') {
       if (args.status || !$scope.ArduinoConnected) {
-        $scope.Main = args.action;
+        $scope.config.main = args.action;
         if (args.status) {
-          $scope.Status = args.status;          
+          $scope.config.status = args.status;          
           $scope.Processing = false;
         } else {
           $scope.Processing = true;
         }
       } else {
-        if ($scope.Main !== action && !$scope.Processing) {
+        if ($scope.config.main !== action && !$scope.Processing) {
           $scope.Processing = true;
-          $scope.Main = action;
+          $scope.config.main = action;
           Model.show('api/push', action).success(function(res) {
-            $scope.Status = res;
+            $scope.config.status = res;
             $scope.Processing = false;
           });
         }
@@ -81,19 +100,19 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
       $rootScope.$broadcast("ON-SWITCH", { action: action });
     } else {
       if (args.status || !$scope.ArduinoConnected) {
-        $scope.CustomMain = args.action;
+        $scope.config.customMain = args.action;
         if (args.status) {
-          $scope.CustomStatus = args.status;
+          $scope.config.customStatus = args.status;
           $scope.Processing = false;
         } else {
           $scope.Processing = true;
         }
       } else {
-        if ($scope.CustomMain !== action && !$scope.Processing) {
+        if ($scope.config.customMain !== action && !$scope.Processing) {
           $scope.Processing = true;
-          $scope.CustomMain = action;
+          $scope.config.customMain = action;
           Model.show('api/push', action).success(function(res) {
-            $scope.CustomStatus = res;
+            $scope.config.customStatus = res;
             $scope.Processing = false;
           });
         }
@@ -155,17 +174,13 @@ app.controller("MainController", ['$scope', '$rootScope', 'Model', function($sco
 }]);
 
 app.controller("CustomController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
-  function initialize() {
-    $scope.on = ($scope.Main == 'on');
-  };
-  initialize();
   $scope.toggleOn = function(action) {
     if (action == 'on' || action == 'off') {
-      $scope.on = (action == 'on');
+      $scope.config.on = (action == 'on');
     }
   };
   $scope.clickOn = function() {
-    var action = ($scope.on) ? 'on' : 'off';
+    var action = ($scope.config.on) ? 'on' : 'off';
     if (!$scope.ArduinoConnected)
       Model.show('api/push', action);
     $rootScope.$broadcast("PUSH-ACTION", { action: action });

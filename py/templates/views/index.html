@@ -32,15 +32,15 @@
     <script type="text/ng-template" id="custom.html">
       <div class="panel">
         <div class="panel-heading">
-          <h2 class="panel-title">{{ Main }}</h2>
+          <h2 class="panel-title">{{ config.main }}</h2>
         </div>
         <div class="panel-body">
           <span data-ng-show="Processing">
             <i class='fa fa-spin fa-cog'></i> processing...
           </span>
-          <span data-ng-hide="Processing">{{ Status }}</span>
+          <span data-ng-hide="Processing">{{ config.status }}</span>
           <br /><br />
-          <switch ng-model="on" data-ng-click="clickOn()"></switch>
+          <switch ng-model="config.on" data-ng-click="clickOn()"></switch>
         </div>
       </div>
       <input data-ng-model="customText" 
@@ -55,7 +55,7 @@
           <span data-ng-show="Processing">
             <i class='fa fa-spin fa-cog'></i> processing...
           </span>
-          <span data-ng-hide="Processing">{{ CustomStatus }}</span>
+          <span data-ng-hide="Processing">{{ config.customStatus }}</span>
         </div>
       </div>
 
