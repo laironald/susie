@@ -16,67 +16,78 @@
 {% block templates %}
   {% raw %}
     <script type="text/ng-template" id="main.html">
-      <div data-ng-hide="ArduinoConnected">
+      <div data-ng-hide="AnyConnected">
         <div class="alert alert-warning" role="alert">
-          Warning: Arduino not currently connected. 
+          Arduino not currently connected. 
           <a href="javascript:window.location.reload();"><i class="fa fa-refresh"></i> Refresh</a>
         </div>
       </div>
+      <input data-ng-model="Config.me.info.uuid" 
+        type="text" class="form-control" 
+        placeholder="Rename your arduino..." 
+        data-ng-blur="">
+    </script>
 
+
+    <script type="text/ng-template" id="custom.html">
       <div class="panel">
         <div class="panel-heading">
           <h2 class="panel-title">{{ Main }}</h2>
         </div>
         <div class="panel-body">
-          <span data-ng-show="processing">
+          <span data-ng-show="Processing">
             <i class='fa fa-spin fa-cog'></i> processing...
           </span>
-          <span data-ng-hide="processing">{{ Status }}</span>
+          <span data-ng-hide="Processing">{{ Status }}</span>
+          <br /><br />
+          <switch ng-model="on" data-ng-click="clickOn()"></switch>
         </div>
       </div>
-      <switch ng-model="on" data-ng-click="clickOn()"></switch>
-    </script>
-
-    <script type="text/ng-template" id="custom.html">
-      <form class="form-horizontal" role="form">
-        <div class="form-group">
-          <div class="col-sm-10">
-            <input data-ng-model="customText" 
-              type="text" class="form-control" 
-              placeholder="type in whatever you want..." 
-              data-ng-blur="customFinish()">
-          </div>
-        </div>
-      </form>
-
+      <input data-ng-model="customText" 
+        type="text" class="form-control" 
+        placeholder="type in whatever you want..." 
+        data-ng-blur="customFinish()">
       <div class="panel">
         <div class="panel-heading">
           <h2 class="panel-title"></h2>
         </div>
         <div class="panel-body">
-          <span data-ng-show="processing">
+          <span data-ng-show="Processing">
             <i class='fa fa-spin fa-cog'></i> processing...
           </span>
-          <span data-ng-hide="processing">{{ CustomStatus }}</span>
+          <span data-ng-hide="Processing">{{ CustomStatus }}</span>
         </div>
       </div>
+
+      <div data-ng-show="AnyConnected">
+        <div class="list-group">
+          <a data-ng-repeat="sketch in Config.sketches" 
+             data-ng-class="{ 'active': sketch == Config.selectedSketch }"
+             data-ng-click="selectSketch(sketch)"
+             href=""
+             class="list-group-item">
+            {{ sketch }}
+          </a>
+          <span data-ng-show="loadingSketch">
+            <i class='fa fa-spin fa-cog'></i> loading sketch...
+          </span>
+        </div>
+      </div>
+
     </script>
 
+
     <script type="text/ng-template" id="arduinos.html">
-      <div class="panel" data-ng-cloak>
-        <div class="panel-heading">
-          <h2 class="panel-title">Arduinos</h2>
-        </div>
-        <div class="panel-body">
-          <ul class="list-group">
-            <li class="list-group-item active">{{ MeDevice.uuid }}</li>
-            <li class="list-group-item">Cras justo odio</li>
-            <li class="list-group-item">Dapibus ac facilisis in</li>
-            <li class="list-group-item">Morbi leo risus</li>
-            <li class="list-group-item">Porta ac consectetur ac</li>
-            <li class="list-group-item">Vestibulum at eros</li>
-          </ul>
-        </div>
+      <div class="list-group">
+        <a data-ng-repeat="device in Config.devices" 
+           data-ng-class="{ 'active': device == Config.me }"
+           href=""
+           class="list-group-item">
+          {{ device.info.uuid }}
+          <span data-ng-show="device.info.arduino">
+            <i class="fa fa-cube pull-right"></i>
+          </span>
+        </a>
       </div>
     </script>
 

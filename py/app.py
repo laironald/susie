@@ -31,6 +31,19 @@ def index():
 #################
 ## commands
 
+# create sketch list
+@app.route('/api/sketches')
+def sketches():
+  import os
+  path = os.listdir('../sketches')
+  if ".DS_Store" in path:
+    path.remove(".DS_Store")
+  return Response(json.dumps(path), mimetype='application/javascript')
+
+@app.route('/api/sketches/<sketch>')
+def upload(sketch):
+  return uarm.upload(sketch)
+
 # create endpoint for authentication
 @app.route('/api/auth', methods=['POST'])
 def auth():

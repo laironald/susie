@@ -24,15 +24,29 @@ var app = angular.module('cooking', [
 
 app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
   // variable called ArduinoConnected
-  $scope.MeDevice = 'Me';
-  $scope.Config = {
-    devices: []
-  };
-  $scope.Main = "ready?";
-  $scope.Status = "get started";
-  $scope.CustomMain = "";
-  $scope.CustomStatus = "shake it up";
-  $scope.Processing = false;
+  function initialize() {
+    // sessionStorage.Config = JSON.stringify($scope.Config);
+    // $scope.Config = $.parseJSON(sessionStorage.Config);
+
+    $scope.Config = {
+      me: null,
+      devices: [],
+      selectedDevice: null,
+      sketches: [],
+      selectedSketch: null
+    };
+
+    $scope.AnyConnected = true;
+    $scope.Main = "ready?";
+    $scope.Status = "get started";
+    $scope.CustomMain = "";
+    $scope.CustomStatus = "shake it up";
+    $scope.Processing = false;
+    Model.index('api/sketches').success(function(data) {
+      $scope.Config.sketches = data;
+    });
+  }
+  initialize();
 
   $scope.pushed = function(action) {
     $rootScope.$broadcast("PUSH-ACTION", { action: action });
@@ -100,24 +114,37 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
     });
   });
   $scope.presenceChannel.bind('pusher:member_removed', function(member) {
-    console.log('member_removed');
-    console.log(member.info);
-    console.log('-----');
-    $scope.presenceChannel.members.each(function(m) {
-      console.log(m.info);
+    $scope.$apply(function() {
+      $scope.AnyConnected = false;
+      $scope.Config.devices.splice($scope.Config.devices.indexOf(member), 1);
+      _.each($scope.Config.devices, function(device) {
+        if (device.arduino) {
+          $scope.AnyConnected = true;
+        }
+      });
     });
   });
   $scope.presenceChannel.bind('pusher:member_added', function(member) {
-    console.log('member_added');
-    console.log(member.info);
+    $scope.$apply(function() {
+      $scope.Config.devices.push(member);
+      if (member.info.arduino) {
+        $scope.AnyConnected = true;
+      }
+    });
   });
   $scope.presenceChannel.bind('pusher:subscription_succeeded', function(members) {
     $scope.$apply(function() {
-      console.log('subscription_succeeded');
+      $scope.AnyConnected = false;
+      $scope.Config.me = members.me;
+      $scope.Config.devices = [ members.me ];
       members.each(function(member) {
-        console.log(member.info);
+        if (member.info != members.me.info) {
+          $scope.Config.devices.push(member);
+        }
+        if (member.info.arduino) {
+          $scope.AnyConnected = true;
+        }
       });
-      $scope.MeDevice = members.me.info;
     });
   });
 
@@ -125,12 +152,11 @@ app.controller("CookingController", ['$scope', '$rootScope', 'Model', function($
 
 
 app.controller("MainController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
+}]);
+
+app.controller("CustomController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
   function initialize() {
-    if ($scope.Main == 'on') {
-      $scope.on = true;
-    } else {
-      $scope.off = true;
-    }
+    $scope.on = ($scope.Main == 'on');
   };
   initialize();
   $scope.toggleOn = function(action) {
@@ -144,20 +170,25 @@ app.controller("MainController", ['$scope', '$rootScope', 'Model', function($sco
       Model.show('api/push', action);
     $rootScope.$broadcast("PUSH-ACTION", { action: action });
   };
-  // ROOTSCOPE
-  $rootScope.$on("ON-SWITCH", function(evt, args) {
-    $scope.toggleOn(args.action);
-  });
-
-}]);
-
-app.controller("CustomController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
   $scope.customFinish = function() {
     var action = $scope.customText;
     if (!$scope.ArduinoConnected)
       Model.show('api/push', action);    
     $rootScope.$broadcast("PUSH-ACTION", { action: action });
   };
+  $scope.selectSketch = function(sketch) {
+    var action = $scope.customText;
+    $scope.loadingSketch = true;
+    if ($scope.ArduinoConnected)
+      Model.show('api/sketches', sketch).success(function(data) {
+        $scope.Config.selectedSketch = sketch;
+        $scope.loadingSketch = false;
+      });
+  };
+  // ROOTSCOPE
+  $rootScope.$on("ON-SWITCH", function(evt, args) {
+    $scope.toggleOn(args.action);
+  });
 }]);
 
 app.controller("ArduinosController", ['$scope', '$rootScope', 'Model', function($scope, $rootScope, Model) {
