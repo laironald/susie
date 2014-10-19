@@ -22,13 +22,6 @@
           <a href="javascript:window.location.reload();"><i class="fa fa-refresh"></i> Refresh</a>
         </div>
       </div>
-      <div class="list-group">
-        <input data-ng-repeat="device in config.devices"
-          data-ng-if="device.id == Config.me.id"
-          data-ng-model="device.info.uuid" 
-          type="text" class="form-control" 
-          placeholder="Rename your arduino...">
-      </div>
     </script>
 
 
@@ -82,15 +75,21 @@
 
     <script type="text/ng-template" id="arduinos.html">
       <div class="list-group">
-        <a data-ng-repeat="device in config.devices" 
-           data-ng-class="{ 'active': device.info.uuid == Config.me.info.uuid }"
-           href=""
-           class="list-group-item">
-          {{ device.info.uuid }}
-          <span data-ng-show="device.info.arduino">
-            <i class="fa fa-cube pull-right"></i>
-          </span>
-        </a>
+        <div data-ng-repeat="device in config.devices">
+          <a data-ng-class="{ 'active': device.info.uuid == Config.me.info.uuid }"
+             href=""
+             class="list-group-item">
+            {{ device.info.uuid }}
+            <span data-ng-show="device.info.arduino">
+              <i class="fa fa-cube pull-right"></i>
+            </span>
+          </a>
+          <input 
+            data-ng-if="device.id == Config.me.id"
+            data-ng-model="device.info.uuid" 
+            type="text" class="form-control" 
+            placeholder="Rename your arduino..." />
+        </div>
       </div>
     </script>
 
