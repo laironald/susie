@@ -1,2 +1,6 @@
 *.pyc
 py/*.pyc
+
+.build
+.holder
+bower_components

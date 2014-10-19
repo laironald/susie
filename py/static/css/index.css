@@ -1,0 +1,9 @@
+.app-body {
+  background: #fff; }
+  .app-body .app-content {
+    overflow: auto !important; }
+
+.form-horizontal {
+  overflow: hidden; }
+  .form-horizontal .form-control {
+    font-size: 16px; }
