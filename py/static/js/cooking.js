@@ -133,17 +133,22 @@ app.controller("CookingController", ['$scope', '$firebase', '$rootScope', 'Model
         $rootScope.$broadcast("PUSH-ACTION", data);
       });
     });
-    // presenceChannel.bind('pusher:member_removed', function(member) {
-    //   $scope.$apply(function() {
-    //     $scope.config.connected = false;
-    //     $scope.config.devices.splice($scope.config.devices.indexOf(member), 1);
-    //     _.each($scope.config.devices, function(device) {
-    //       if (device.arduino) {
-    //         $scope.config.connected = true;
-    //       }
-    //     });
-    //   });
-    // });
+    presenceChannel.bind('pusher:member_removed', function(member) {
+      // remove the arduino that just disconnected
+      $scope.$apply(function() {
+        $scope.config.connected = false;
+        _.each($scope.config.devices, function(device, index) {
+          if (device.id == member.id) {
+            $scope.config.devices.splice(index, 1);
+          } else {
+            if (device.arduino) {
+              $scope.config.connected = true;
+            }
+          }
+        });
+      });
+    });
+    // not needed because firebase auto syncs this information
     // presenceChannel.bind('pusher:member_added', function(member) {
     //   $scope.$apply(function() {
     //     $scope.config.devices.push(member);
