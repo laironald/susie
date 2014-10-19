@@ -3,3 +3,4 @@ flask
 pusher
 Flask-Scss
 gunicorn==19.1.1
+ino
