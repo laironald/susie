@@ -16,16 +16,19 @@
 {% block templates %}
   {% raw %}
     <script type="text/ng-template" id="main.html">
-      <div data-ng-hide="AnyConnected">
+      <div data-ng-hide="config.connected">
         <div class="alert alert-warning" role="alert">
           Arduino not currently connected. 
           <a href="javascript:window.location.reload();"><i class="fa fa-refresh"></i> Refresh</a>
         </div>
       </div>
-      <input data-ng-model="Config.me.info.uuid" 
-        type="text" class="form-control" 
-        placeholder="Rename your arduino..." 
-        data-ng-blur="">
+      <div class="list-group">
+        <input data-ng-repeat="device in config.devices"
+          data-ng-if="device.id == Config.me.id"
+          data-ng-model="device.info.uuid" 
+          type="text" class="form-control" 
+          placeholder="Rename your arduino...">
+      </div>
     </script>
 
 
@@ -59,7 +62,7 @@
         </div>
       </div>
 
-      <div data-ng-show="AnyConnected">
+      <div data-ng-show="config.connected">
         <div class="list-group">
           <a data-ng-repeat="sketch in Config.sketches" 
              data-ng-class="{ 'active': sketch == Config.selectedSketch }"
@@ -79,8 +82,8 @@
 
     <script type="text/ng-template" id="arduinos.html">
       <div class="list-group">
-        <a data-ng-repeat="device in Config.devices" 
-           data-ng-class="{ 'active': device == Config.me }"
+        <a data-ng-repeat="device in config.devices" 
+           data-ng-class="{ 'active': device.info.uuid == Config.me.info.uuid }"
            href=""
            class="list-group-item">
           {{ device.info.uuid }}
