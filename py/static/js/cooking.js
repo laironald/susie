@@ -50,6 +50,7 @@ app.controller("CookingController", ['$scope', '$firebase', '$rootScope', 'Model
       } else {
         $scope.config.on = ($scope.config.main == 'on');
       }
+      readyPusher();
     });
 
     $scope.Config = {
@@ -121,51 +122,54 @@ app.controller("CookingController", ['$scope', '$firebase', '$rootScope', 'Model
   });
 
   // PUSHER
-  $scope.pusher = new Pusher( $('.pusher').data('key'), {
-    authEndpoint: '/api/auth'
-  });
-  $scope.publicChannel = $scope.pusher.subscribe( $(".pusher").data('public') );
-  $scope.presenceChannel = $scope.pusher.subscribe( $(".pusher").data('presence') );
-
-  $scope.publicChannel.bind('PUSH-EVENT', function(data) {
-    $scope.$apply(function() {
-      $rootScope.$broadcast("PUSH-ACTION", data);
+  var readyPusher = function() {
+    var pusher = new Pusher( $('.pusher').data('key'), {
+      authEndpoint: '/api/auth'
     });
-  });
-  $scope.presenceChannel.bind('pusher:member_removed', function(member) {
-    $scope.$apply(function() {
-      $scope.AnyConnected = false;
-      $scope.Config.devices.splice($scope.Config.devices.indexOf(member), 1);
-      _.each($scope.Config.devices, function(device) {
-        if (device.arduino) {
-          $scope.AnyConnected = true;
-        }
+    var publicChannel = pusher.subscribe( $(".pusher").data('public') );
+    var presenceChannel = pusher.subscribe( $(".pusher").data('presence') );
+
+    publicChannel.bind('PUSH-EVENT', function(data) {
+      $scope.$apply(function() {
+        $rootScope.$broadcast("PUSH-ACTION", data);
       });
     });
-  });
-  $scope.presenceChannel.bind('pusher:member_added', function(member) {
-    $scope.$apply(function() {
-      $scope.Config.devices.push(member);
-      if (member.info.arduino) {
-        $scope.AnyConnected = true;
-      }
+    presenceChannel.bind('pusher:member_removed', function(member) {
+      $scope.$apply(function() {
+        $scope.AnyConnected = false;
+        $scope.Config.devices.splice($scope.Config.devices.indexOf(member), 1);
+        _.each($scope.Config.devices, function(device) {
+          if (device.arduino) {
+            $scope.AnyConnected = true;
+          }
+        });
+      });
     });
-  });
-  $scope.presenceChannel.bind('pusher:subscription_succeeded', function(members) {
-    $scope.$apply(function() {
-      $scope.AnyConnected = false;
-      $scope.Config.me = members.me;
-      $scope.Config.devices = [ members.me ];
-      members.each(function(member) {
-        if (member.info != members.me.info) {
-          $scope.Config.devices.push(member);
-        }
+    presenceChannel.bind('pusher:member_added', function(member) {
+      $scope.$apply(function() {
+        $scope.Config.devices.push(member);
         if (member.info.arduino) {
           $scope.AnyConnected = true;
         }
       });
     });
-  });
+    presenceChannel.bind('pusher:subscription_succeeded', function(members) {
+      $scope.$apply(function() {
+        $scope.AnyConnected = false;
+        $scope.Config.me = members.me;
+        $scope.config.me = members.me;
+        $scope.Config.devices = [ members.me ];
+        members.each(function(member) {
+          if (member.info != members.me.info) {
+            $scope.Config.devices.push(member);
+          }
+          if (member.info.arduino) {
+            $scope.AnyConnected = true;
+          }
+        });
+      });
+    });
+  };
 
 }]);
 
