@@ -44,6 +44,15 @@ def sketches():
 def upload(sketch):
   return uarm.upload(sketch)
 
+@app.route('/api/record')
+def record():
+  import datetime
+  now = datetime.datetime.now()
+  uarm.upload("start", "../record")
+  uarm.record()
+  print datetime.datetime.now() - now
+  return "ok"
+
 # create endpoint for authentication
 @app.route('/api/auth', methods=['POST'])
 def auth():
