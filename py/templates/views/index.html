@@ -57,16 +57,24 @@
 
       <div data-ng-show="config.connected">
         <div class="list-group">
+          <a data-ng-click="recordSketch()"
+             href=""
+             class="list-group-item">
+            record
+            <span data-ng-show="loadingSketch=='record'">
+              <i class='fa fa-spin fa-cog'></i> loading sketch...
+            </span>
+          </a>
           <a data-ng-repeat="sketch in Config.sketches" 
              data-ng-class="{ 'active': sketch == Config.selectedSketch }"
              data-ng-click="selectSketch(sketch)"
              href=""
              class="list-group-item">
             {{ sketch }}
+            <span data-ng-show="loadingSketch=='{{ sketch }}'">
+              <i class='fa fa-spin fa-cog'></i> loading sketch...
+            </span>
           </a>
-          <span data-ng-show="loadingSketch">
-            <i class='fa fa-spin fa-cog'></i> loading sketch...
-          </span>
         </div>
       </div>
 

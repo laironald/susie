@@ -94,6 +94,9 @@ app.controller("CookingController", ['$scope', '$firebase', '$rootScope', 'Model
           Model.show('api/push', action).success(function(res) {
             $scope.config.status = res;
             $scope.Processing = false;
+          }).error(function(data) {
+            $scope.config.status = "error";
+            $scope.Processing = false;
           });
         }
       }
@@ -113,6 +116,9 @@ app.controller("CookingController", ['$scope', '$firebase', '$rootScope', 'Model
           $scope.config.customMain = action;
           Model.show('api/push', action).success(function(res) {
             $scope.config.customStatus = res;
+            $scope.Processing = false;
+          }).error(function(data) {
+            $scope.config.customStatus = "error";
             $scope.Processing = false;
           });
         }
@@ -209,11 +215,25 @@ app.controller("CustomController", ['$scope', '$rootScope', 'Model', function($s
     $rootScope.$broadcast("PUSH-ACTION", { action: action });
   };
   $scope.selectSketch = function(sketch) {
-    var action = $scope.customText;
-    $scope.loadingSketch = true;
+    $scope.loadingSketch = sketch;
     if ($scope.ArduinoConnected)
       Model.show('api/sketches', sketch).success(function(data) {
         $scope.Config.selectedSketch = sketch;
+        $scope.loadingSketch = false;
+      }).error(function(data) {
+        $scope.loadingSketch = false;
+      });
+  };
+  $scope.recordSketch = function() {
+    $scope.loadingSketch = 'record';
+    $scope.Config.selectedSketch = null;
+    if ($scope.ArduinoConnected)
+      Model.show('api', 'record').success(function(data) {
+        $scope.loadingSketch = false;
+        Model.index('api/sketches').success(function(data) {
+          $scope.Config.sketches = data;
+        });
+      }).error(function(data) {
         $scope.loadingSketch = false;
       });
   };

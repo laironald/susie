@@ -40,15 +40,77 @@ def push(item):
     arm.ser.close()
   return output
 
-def upload(sketch):
+def upload(sketch, directory = "../sketches"):
   import os
   from subprocess import call
   current_dir = os.getcwd()
-  os.chdir("../sketches/{0}".format(sketch))
+  os.chdir("{0}/{1}".format(directory, sketch))
   call(["ino", "build"])
   call(["ino", "upload"])
   os.chdir(current_dir)
   return "ok"
+
+def record(start="start", stop="stop", outfile="ron"):
+  import io
+  import os
+
+  if not os.path.exists("../sketches/{0}/src".format(outfile)):
+    os.makedirs("../sketches/{0}/src".format(outfile))
+    os.makedirs("../sketches/{0}/lib".format(outfile))
+  f = open("../sketches/{0}/src/sketch.ino".format(outfile), "wrb")
+  f.write("""
+String readString;
+void setup() 
+{
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  while (Serial.available()) {
+    delay(3);  
+    char c = Serial.read();
+    readString += c; 
+  }
+  if (readString.length() > 0) {
+    if (readString == "on") {
+    """)
+
+  output = None
+  arm = Arduino()
+  if arm.ser:
+    time.sleep(2)
+
+    arm.ser.write(start)
+
+    ser = arm.ser
+    sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
+
+    sio.write(unicode("start"))
+
+    i = 0
+    while True:
+      line = sio.readline()[:-1]
+      if line == "stop":
+        break
+      time.sleep(0.1)
+      print i, line
+      f.write(line)
+      f.write("\n")
+      i += 1
+
+    sio.flush()
+    arm.ser.close()
+
+  f.write("""
+    }
+    readString="";
+  }
+} 
+    """)
+  f.close()
+
+  return output
 
 
 # def listen(item = None):
