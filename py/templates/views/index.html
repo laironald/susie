@@ -26,36 +26,41 @@
 
 
     <script type="text/ng-template" id="custom.html">
-      <div class="panel">
-        <div class="panel-heading">
-          <h2 class="panel-title">{{ config.main }}</h2>
-        </div>
-        <div class="panel-body">
-          <span data-ng-show="Processing">
-            <i class='fa fa-spin fa-cog'></i> processing...
-          </span>
-          <span data-ng-hide="Processing">{{ config.status }}</span>
-          <br /><br />
-          <switch ng-model="config.on" data-ng-click="clickOn()"></switch>
+      <div data-ng-hide="config.connected">
+        <div class="alert alert-warning" role="alert">
+          Arduino not currently connected. 
+          <a href="javascript:window.location.reload();"><i class="fa fa-refresh"></i> Refresh</a>
         </div>
       </div>
-      <input data-ng-model="customText" 
-        type="text" class="form-control" 
-        placeholder="type in whatever you want..." 
-        data-ng-blur="customFinish()">
-      <div class="panel">
-        <div class="panel-heading">
-          <h2 class="panel-title"></h2>
-        </div>
-        <div class="panel-body">
-          <span data-ng-show="Processing">
-            <i class='fa fa-spin fa-cog'></i> processing...
-          </span>
-          <span data-ng-hide="Processing">{{ config.customStatus }}</span>
-        </div>
-      </div>
-
       <div data-ng-show="config.connected">
+        <div class="panel">
+          <div class="panel-heading">
+            <h2 class="panel-title">{{ config.main }}</h2>
+          </div>
+          <div class="panel-body">
+            <span data-ng-show="Processing">
+              <i class='fa fa-spin fa-cog'></i> processing...
+            </span>
+            <span data-ng-hide="Processing">{{ config.status }}</span>
+            <br /><br />
+            <switch ng-model="config.on" data-ng-click="clickOn()"></switch>
+          </div>
+        </div>
+        <input data-ng-model="customText" 
+          type="text" class="form-control" 
+          placeholder="type in whatever you want..." 
+          data-ng-blur="customFinish()">
+        <div class="panel">
+          <div class="panel-heading">
+            <h2 class="panel-title"></h2>
+          </div>
+          <div class="panel-body">
+            <span data-ng-show="Processing">
+              <i class='fa fa-spin fa-cog'></i> processing...
+            </span>
+            <span data-ng-hide="Processing">{{ config.customStatus }}</span>
+          </div>
+        </div>
         <div class="list-group">
           <a data-ng-click="recordSketch()"
              href=""
